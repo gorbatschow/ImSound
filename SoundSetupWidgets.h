@@ -1,0 +1,172 @@
+#pragma once
+#include "ImWrapper.h"
+#include <RtAudio.h>
+#include <RtSoundClient.h>
+#include <RtSoundIO.h>
+#include <math.h>
+#include <memory.h>
+
+// AudioApiCombo
+// -----------------------------------------------------------------------------
+class AudioApiCombo : public ImWrap::ComboBox<RtAudio::Api> {
+public:
+  AudioApiCombo() {
+    _label = "Audio API";
+    std::vector<RtAudio::Api> rtAPIs;
+    RtAudio::getCompiledApi(rtAPIs);
+    _valueList.resize(rtAPIs.size());
+    for (size_t i = 0; i != rtAPIs.size(); ++i) {
+      _valueList[i] = {rtAPIs[i], RtAudio::getApiDisplayName(rtAPIs[i])};
+    }
+  }
+
+protected:
+};
+
+// SampleRateCombo
+// -----------------------------------------------------------------------------
+class SampleRateCombo : public ImWrap::ComboBox<int> {
+public:
+  SampleRateCombo() {
+    _currIndex = 0;
+    _label = "Sample Rate (Hz)";
+    _valueList = {{192000, "192k"}, {96000, "96k"}, {48000, "48k"},
+                  {44100, "44.1k"}, {24000, "24k"}, {12000, "12k"}};
+  }
+};
+
+// BufferSizeInput
+// -----------------------------------------------------------------------------
+class BufferSizeInput : public ImWrap::ValueElement<int> {
+public:
+  BufferSizeInput() {
+    _label = "Buffer Size";
+    _value = 1024;
+  }
+
+  void paintElement() override {
+    if (ImGui::InputInt(_label.c_str(), &_powerOfTwo, 1, 1)) {
+      _powerOfTwo = _powerOfTwo < 1 ? 1 : _powerOfTwo;
+      _powerOfTwo = _powerOfTwo > 20 ? 20 : _powerOfTwo;
+      _value = (int(1)) << _powerOfTwo;
+    }
+    ImGui::SameLine();
+    ImGui::Text("%d", _value);
+  }
+
+  void setValue(const int &value) override {
+    _powerOfTwo = int(std::log2(double(value)));
+  }
+
+private:
+  int _powerOfTwo{10};
+};
+
+// StreamStatusLine
+// -----------------------------------------------------------------------------
+class StreamStatusLine : public ImWrap::BasicElement {
+
+public:
+  StreamStatusLine(std::weak_ptr<RtSoundIO> io) : _io{io} {}
+
+protected:
+  void paintElement() override {
+    const auto soundIO{_io.lock().get()};
+    assert(soundIO != nullptr);
+    const auto &streamInfo{soundIO->streamInfo()};
+
+    if (soundIO->streamInfo().streamRunning()) {
+      if (_fpsCounter == 0) {
+        _fpsCounter = int(float(ImGui::GetIO().Framerate) / float(_updateRate));
+        _bufferTime = soundIO->streamInfo().bufferTime();
+        _processingTimeDisp = _processingTime;
+        _processingTime = 0;
+      } else {
+        _fpsCounter--;
+        _processingTime =
+            std::max(_processingTime, soundIO->streamInfo().processingTime());
+      }
+
+      ImGui::Text("Trun=%.1fs Tbuf=%lous Tprc=%lous",
+                  soundIO->streamInfo().streamTime(), _bufferTime,
+                  _processingTimeDisp);
+    } else {
+      ImGui::Text("Stopped");
+    }
+  }
+
+private:
+  std::weak_ptr<RtSoundIO> _io;
+  int _updateRate{2};
+  int _fpsCounter{};
+  long _bufferTime{};
+  long _processingTime{}, _processingTimeDisp{};
+};
+
+// AudioDeviceCombo
+// -----------------------------------------------------------------------------
+class SoundDeviceCombo : public ImWrap::ComboBox<RtAudio::DeviceInfo>,
+                         public RtSoundClient {
+public:
+  enum DeviceType { All, InputOnly, OutputOnly };
+
+  SoundDeviceCombo(DeviceType t = DeviceType::All) : _deviceType(t) {
+    if (t == All) {
+      _enabledFlag.setLabel("Audio Device");
+    } else if (t == InputOnly) {
+      _enabledFlag.setLabel("Input Device");
+    } else if (t == OutputOnly) {
+      _enabledFlag.setLabel("Output Device");
+    }
+  }
+  bool deviceEnabled() const { return _enabledFlag.value(); }
+
+protected:
+  void paintElement() override {
+    ImWrap::ComboBox<RtAudio::DeviceInfo>::paintElement();
+    ImGui::SameLine();
+    _enabledFlag.paint();
+  }
+
+private:
+  const DeviceType _deviceType{All};
+  ImWrap::CheckBox _enabledFlag;
+
+  void
+  updateSoundDevices(const std::vector<RtAudio::DeviceInfo> &devices) override {
+    _valueList.clear();
+    _valueList.reserve(devices.size());
+    for (auto &device : devices) {
+      if (_deviceType == DeviceType::All) {
+        _valueList.push_back({device, device.name});
+      } else if (_deviceType == DeviceType::InputOnly &&
+                 device.inputChannels > 0) {
+        _valueList.push_back({device, device.name});
+      } else if (_deviceType == DeviceType::OutputOnly &&
+                 device.outputChannels > 0) {
+        _valueList.push_back({device, device.name});
+      }
+    }
+    _valueList.shrink_to_fit();
+  }
+};
+
+// FrequencySpinBox
+// -----------------------------------------------------------------------------
+class FrequencySpinBox : public ImWrap::SpinBox<int> {
+public:
+  FrequencySpinBox() {}
+
+  void paintElement() override {
+    SpinBox::paintElement();
+    ImGui::SameLine();
+    if (_value > 0) {
+      ImGui::Text("%.2f Hz", _df * _value);
+    } else {
+      ImGui::Text("Wideband");
+    }
+  }
+
+private:
+  double _df{0.0f};
+};
