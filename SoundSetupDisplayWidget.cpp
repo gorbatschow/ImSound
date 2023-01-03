@@ -1,4 +1,5 @@
 #include "SoundSetupDisplayWidget.h"
+#include <imgui.h>
 
 void SoundSetupDisplayWidget::paint() {
   if (ImGui::BeginTable("Setup Table", 2)) {

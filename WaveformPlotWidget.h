@@ -1,9 +1,9 @@
 #pragma once
 #include "WaveformAxis.h"
 #include "WaveformScopeWidget.h"
-#include <ImWrapper.h>
 #include <RtSoundClient.h>
 #include <atomic>
+#include <imw.h>
 #include <vector>
 
 class WaveformPlotWidget : public RtSoundClient {
@@ -22,17 +22,17 @@ private:
   WaveformAxisX _axisX;
 
   struct Ui {
-    ImWrap::Label xAxisLabel{"X AXIS"};
-    ImWrap::CheckBox invertXCheck{"Invert"};
-    ImWrap::Button maxWidthBtn{"Max"};
-    ImWrap::Button fitWidthBtn{"Fit"};
-    ImWrap::Button headBtn{"Head"};
-    ImWrap::Button centerBtn{"Center"};
-    ImWrap::Button tailBtn{"Tail"};
-    ImWrap::Button oneWidthBtn{"1/1"};
-    ImWrap::Button halfWidthBtn{"1/2"};
-    ImWrap::Button quartWidthBtn{"1/4"};
-    ImWrap::Button eighthWidthBtn{"1/8"};
+    Imw::Label xAxisLabel{"X AXIS"};
+    Imw::CheckBox invertXCheck{"Invert"};
+    Imw::Button maxWidthBtn{"Max"};
+    Imw::Button fitWidthBtn{"Fit"};
+    Imw::Button headBtn{"Head"};
+    Imw::Button centerBtn{"Center"};
+    Imw::Button tailBtn{"Tail"};
+    Imw::Button oneWidthBtn{"1/1"};
+    Imw::Button halfWidthBtn{"1/2"};
+    Imw::Button quartWidthBtn{"1/4"};
+    Imw::Button eighthWidthBtn{"1/8"};
 
     Ui() {
       invertXCheck.setSameLine(true);

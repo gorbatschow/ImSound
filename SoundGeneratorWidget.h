@@ -1,6 +1,6 @@
 #pragma once
-#include <ImWrapper.h>
 #include <RtSoundNoiseGen.h>
+#include <imw.h>
 
 template <class T> class SoundGeneratorWidget {
 public:
@@ -52,11 +52,11 @@ public:
 
 protected:
   struct Ui {
-    ImWrap::CheckBox inputEnabled{"Input"};
-    ImWrap::CheckBox outputEnabled{"Output"};
-    ImWrap::SpinBox<int> inputChannel{"##"};
-    ImWrap::SpinBox<int> outputChannel{"##"};
-    ImWrap::Slider<int> amplitudeSlider{"Amplitude %"};
+    Imw::CheckBox inputEnabled{"Input"};
+    Imw::CheckBox outputEnabled{"Output"};
+    Imw::SpinBox<int> inputChannel{"##"};
+    Imw::SpinBox<int> outputChannel{"##"};
+    Imw::Slider<int> amplitudeSlider{"Amplitude %"};
 
     Ui() {
       inputChannel.setValueLimits({0, 95});

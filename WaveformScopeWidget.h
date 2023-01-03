@@ -1,8 +1,8 @@
 #pragma once
-#include <ImWrapper.h>
 #include <RtSoundClient.h>
 #include <atomic>
 #include <implot.h>
+#include <imw.h>
 #include <string>
 
 class WaveformScopeWidget : public RtSoundClient {
@@ -43,11 +43,11 @@ private:
   void adjustDataSize();
 
   struct Ui {
-    ImWrap::CheckBox enabledCheck;
-    ImWrap::ComboBox<bool> sourceCombo;
-    ImWrap::SpinBox<int> channelSpin;
-    ImWrap::SpinBox<int> memorySpin;
-    ImWrap::Slider<int> rangeSlider;
+    Imw::CheckBox enabledCheck;
+    Imw::ComboBox<bool> sourceCombo;
+    Imw::SpinBox<int> channelSpin;
+    Imw::SpinBox<int> memorySpin;
+    Imw::Slider<int> rangeSlider;
 
     Ui(const std::string &name) {
       enabledCheck.setLabel("Scope " + name);

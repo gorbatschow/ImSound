@@ -1,14 +1,14 @@
 #pragma once
-#include "ImWrapper.h"
 #include <RtAudio.h>
 #include <RtSoundClient.h>
 #include <RtSoundIO.h>
+#include <imw.h>
 #include <math.h>
 #include <memory.h>
 
 // AudioApiCombo
 // -----------------------------------------------------------------------------
-class AudioApiCombo : public ImWrap::ComboBox<RtAudio::Api> {
+class AudioApiCombo : public Imw::ComboBox<RtAudio::Api> {
 public:
   AudioApiCombo() {
     _label = "Audio API";
@@ -25,7 +25,7 @@ protected:
 
 // SampleRateCombo
 // -----------------------------------------------------------------------------
-class SampleRateCombo : public ImWrap::ComboBox<int> {
+class SampleRateCombo : public Imw::ComboBox<int> {
 public:
   SampleRateCombo() {
     _currIndex = 0;
@@ -37,7 +37,7 @@ public:
 
 // BufferSizeInput
 // -----------------------------------------------------------------------------
-class BufferSizeInput : public ImWrap::ValueElement<int> {
+class BufferSizeInput : public Imw::ValueElement<int> {
 public:
   BufferSizeInput() {
     _label = "Buffer Size";
@@ -64,7 +64,7 @@ private:
 
 // StreamStatusLine
 // -----------------------------------------------------------------------------
-class StreamStatusLine : public ImWrap::BasicElement {
+class StreamStatusLine : public Imw::BasicElement {
 
 public:
   StreamStatusLine(std::weak_ptr<RtSoundIO> io) : _io{io} {}
@@ -105,7 +105,7 @@ private:
 
 // AudioDeviceCombo
 // -----------------------------------------------------------------------------
-class SoundDeviceCombo : public ImWrap::ComboBox<RtAudio::DeviceInfo>,
+class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
                          public RtSoundClient {
 public:
   enum DeviceType { All, InputOnly, OutputOnly };
@@ -123,14 +123,14 @@ public:
 
 protected:
   void paintElement() override {
-    ImWrap::ComboBox<RtAudio::DeviceInfo>::paintElement();
+    Imw::ComboBox<RtAudio::DeviceInfo>::paintElement();
     ImGui::SameLine();
     _enabledFlag.paint();
   }
 
 private:
   const DeviceType _deviceType{All};
-  ImWrap::CheckBox _enabledFlag;
+  Imw::CheckBox _enabledFlag;
 
   void
   updateSoundDevices(const std::vector<RtAudio::DeviceInfo> &devices) override {
@@ -153,7 +153,7 @@ private:
 
 // FrequencySpinBox
 // -----------------------------------------------------------------------------
-class FrequencySpinBox : public ImWrap::SpinBox<int> {
+class FrequencySpinBox : public Imw::SpinBox<int> {
 public:
   FrequencySpinBox() {}
 

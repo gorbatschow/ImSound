@@ -1,5 +1,4 @@
 #pragma once
-#include <ImWrapper.h>
 #include <RtSoundClient.h>
 
 class SoundSetupDisplayWidget : public RtSoundClient {

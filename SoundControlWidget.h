@@ -1,8 +1,8 @@
 #pragma once
-#include "ImWrapper.h"
 #include "SoundSetupWidgets.h"
 #include <RtSoundClient.h>
 #include <RtSoundIO.h>
+#include <imw.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,16 +20,16 @@ public:
   struct Ui {
     Ui(std::weak_ptr<RtSoundIO> soundIO) : streamStatusLine{soundIO} {}
 
-    ImWrap::Button restartEngineBtn{"Restart"};
-    ImWrap::Button startStreamBtn{"Start"};
-    ImWrap::Button stopStreamBtn{"Stop"};
-    ImWrap::Button shotStreamBtn{"Shot"};
-    ImWrap::SpinBoxAB<int> inputChannelsSpin{"Num. Inputs / First Input"};
-    ImWrap::SpinBoxAB<int> outputChannelsSpin{"Num. Outputs / First Output"};
-    ImWrap::CheckBox realtimeCheck{"Realtime"};
-    ImWrap::CheckBox minLatencyCheck{"Min. Latency"};
-    ImWrap::CheckBox exclusiveCheck{"Exclusive"};
-    ImWrap::SpinBox<int> numBuffersSpin{"Num. Buffers"};
+    Imw::Button restartEngineBtn{"Restart"};
+    Imw::Button startStreamBtn{"Start"};
+    Imw::Button stopStreamBtn{"Stop"};
+    Imw::Button shotStreamBtn{"Shot"};
+    Imw::SpinBoxAB<int> inputChannelsSpin{"Num. Inputs / First Input"};
+    Imw::SpinBoxAB<int> outputChannelsSpin{"Num. Outputs / First Output"};
+    Imw::CheckBox realtimeCheck{"Realtime"};
+    Imw::CheckBox minLatencyCheck{"Min. Latency"};
+    Imw::CheckBox exclusiveCheck{"Exclusive"};
+    Imw::SpinBox<int> numBuffersSpin{"Num. Buffers"};
 
     AudioApiCombo audioApiCombo;
     SampleRateCombo sampleRateCombo;
