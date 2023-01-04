@@ -23,6 +23,10 @@ public:
   inline int bufferSize() { return streamSetup().bufferFrames(); }
   inline float range() const { return 1.0f / float(ui.rangeSlider.value()); };
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
 protected:
   virtual void applyStreamConfig(const RtSoundSetup &setup) override;
   virtual void streamDataReady(const RtSoundData &data) override;

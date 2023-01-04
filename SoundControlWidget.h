@@ -13,6 +13,10 @@ public:
 
   void paint();
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
 private:
   std::weak_ptr<RtSoundIO> _soundIO;
 

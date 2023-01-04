@@ -8,6 +8,7 @@ set(CXX_CMAKE_STANDARD_REQUIRED ON)
 set(IMSOUNDWIDGETS_SOURCES
     SoundControlWidget.cpp
     SoundSetupDisplayWidget.cpp
+    SoundClientInfoWidget.cpp
     WaveformScopeWidget.cpp
     WaveformPlotWidget.cpp
 )
