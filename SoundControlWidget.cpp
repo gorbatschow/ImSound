@@ -5,26 +5,10 @@
 
 SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSoundIO> soundIO_)
     : _soundIO(soundIO_) {
-
-  ui.inputChannelsSpin.setValueLimitsA({1, 99});
-  ui.inputChannelsSpin.setValueLimitsB({0, 99});
-  ui.outputChannelsSpin.setValueLimitsA({1, 99});
-  ui.outputChannelsSpin.setValueLimitsB({0, 99});
-
   const auto soundIO{_soundIO.lock().get()};
   assert(soundIO != nullptr);
   soundIO->streamProvider().addClient(ui.inputDeviceCombo);
   soundIO->streamProvider().addClient(ui.outputDeviceCombo);
-
-  ui.restartEngineBtn.setSameLine(true);
-  ui.stopStreamBtn.setSameLine(true);
-  ui.shotStreamBtn.setSameLine(true);
-  ui.streamStatusLine.setSameLine(true);
-  ui.realtimeCheck.setSameLine(true);
-  ui.minLatencyCheck.setSameLine(true);
-  ui.exclusiveCheck.setSameLine(true);
-  ui.numBuffersSpin.setWidth(100.0f);
-  ui.numBuffersSpin.setValueLimits({1, 9});
 }
 
 void SoundControlWidget::paint() {
