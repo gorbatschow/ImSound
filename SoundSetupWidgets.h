@@ -108,14 +108,14 @@ private:
 class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
                          public RtSoundClient {
 public:
-  enum DeviceType { All, InputOnly, OutputOnly };
+  enum DeviceType { AllDevices, InputDevices, OutputDevices };
 
-  SoundDeviceCombo(DeviceType t = DeviceType::All) : _deviceType(t) {
-    if (t == All) {
+  SoundDeviceCombo(DeviceType t = AllDevices) : _deviceType(t) {
+    if (t == AllDevices) {
       _enabledFlag.setLabel("Audio Device");
-    } else if (t == InputOnly) {
+    } else if (t == InputDevices) {
       _enabledFlag.setLabel("Input Device");
-    } else if (t == OutputOnly) {
+    } else if (t == OutputDevices) {
       _enabledFlag.setLabel("Output Device");
     }
   }
@@ -129,7 +129,7 @@ protected:
   }
 
 private:
-  const DeviceType _deviceType{All};
+  const DeviceType _deviceType{AllDevices};
   Imw::CheckBox _enabledFlag;
 
   void
@@ -137,13 +137,13 @@ private:
     _valueList.clear();
     _valueList.reserve(devices.size());
     for (auto &device : devices) {
-      if (_deviceType == DeviceType::All) {
+      if (_deviceType == DeviceType::AllDevices) {
         _valueList.push_back({device, device.name});
-      } else if (_deviceType == DeviceType::InputOnly &&
-                 device.inputChannels > 0) {
+      } else if (_deviceType == InputDevices &&
+                 (device.inputChannels > 0 || device.duplexChannels > 0)) {
         _valueList.push_back({device, device.name});
-      } else if (_deviceType == DeviceType::OutputOnly &&
-                 device.outputChannels > 0) {
+      } else if (_deviceType == OutputDevices &&
+                 (device.outputChannels > 0 || device.duplexChannels > 0)) {
         _valueList.push_back({device, device.name});
       }
     }

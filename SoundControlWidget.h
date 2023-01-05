@@ -55,9 +55,9 @@ public:
     BufferSizeInput bufferFramesInput;
 
     std::shared_ptr<SoundDeviceCombo> inputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::InputOnly)};
+        new SoundDeviceCombo(SoundDeviceCombo::AllDevices)};
     std::shared_ptr<SoundDeviceCombo> outputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::OutputOnly)};
+        new SoundDeviceCombo(SoundDeviceCombo::AllDevices)};
 
     StreamStatusLine streamStatusLine;
   };
