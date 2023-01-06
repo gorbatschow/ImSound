@@ -1,5 +1,6 @@
 #include "WaveformScopeWidget.h"
 #include "DownsampleLTTB.h"
+#include <algorithm>
 #include <implot.h>
 #include <mutex>
 #include <numeric>
@@ -72,6 +73,10 @@ void WaveformScopeWidget::plot() {
     std::lock_guard lock(streamData().mutex);
     ImPlot::PlotStems(label().c_str(), &_xData[xmin], &_yData[xmin], npts);
   }
+
+  //  std::lock_guard lock(streamData().mutex);
+  //  ImPlot::PlotLine(label().c_str(), _xData.data(), _yData.data(),
+  //                   _yData.size());
 }
 
 void WaveformScopeWidget::applyStreamConfig(const RtSoundSetup &setup) {
@@ -85,12 +90,14 @@ void WaveformScopeWidget::streamDataReady(const RtSoundData &data) {
 
   if (!_isOutput && _channel < data.inputsN()) {
     std::lock_guard lock(data.mutex);
+    std::copy(data.inputBuffer(_channel),
+              data.inputBuffer(_channel) + data.framesN(), _yData.rbegin());
     std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
                 _yData.rend());
-    data.rcopyInput(_channel, _yData.data());
   } else if (_isOutput && _channel < data.outputsN()) {
     std::lock_guard lock(data.mutex);
-    data.rcopyOutput(_channel, _yData.data());
+    std::copy(data.outputBuffer(_channel),
+              data.outputBuffer(_channel) + data.framesN(), _yData.rbegin());
     std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
                 _yData.rend());
   }
