@@ -23,10 +23,10 @@ private:
 public:
   struct Ui {
     Ui(std::weak_ptr<RtSoundIO> soundIO) : streamStatusLine{soundIO} {
-      inputChannelsSpin.setValueLimitsA({1, 99});
-      inputChannelsSpin.setValueLimitsB({0, 99});
-      outputChannelsSpin.setValueLimitsA({1, 99});
-      outputChannelsSpin.setValueLimitsB({0, 99});
+      inputChannelsSpin.setValueLimitsA({1, 100});
+      inputChannelsSpin.setValueLimitsB({0, 100});
+      outputChannelsSpin.setValueLimitsA({1, 100});
+      outputChannelsSpin.setValueLimitsB({0, 100});
 
       restartEngineBtn.setSameLine(true);
       stopStreamBtn.setSameLine(true);
@@ -55,9 +55,9 @@ public:
     BufferSizeInput bufferFramesInput;
 
     std::shared_ptr<SoundDeviceCombo> inputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::AllDevices)};
+        new SoundDeviceCombo(SoundDeviceCombo::InputDevices)};
     std::shared_ptr<SoundDeviceCombo> outputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::AllDevices)};
+        new SoundDeviceCombo(SoundDeviceCombo::OutputDevices)};
 
     StreamStatusLine streamStatusLine;
   };

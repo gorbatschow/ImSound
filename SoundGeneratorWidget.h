@@ -1,67 +1,78 @@
 #pragma once
 #include <RtSoundNoiseGen.h>
+#include <imgui_internal.h>
 #include <imw.h>
 
-template <class T> class SoundGeneratorWidget {
+template <class T> class SoundGeneratorWidget : public RtSoundClient {
 public:
   SoundGeneratorWidget(std::weak_ptr<T> generator_) : _generator(generator_) {
     const auto generator{_generator.lock()};
     assert(generator != nullptr);
-
-    _generator.lock()->setAmplitude(ui.amplitudeSlider());
   }
 
-  virtual ~SoundGeneratorWidget() {}
+  virtual ~SoundGeneratorWidget() = default;
 
   virtual void paint() {
     const auto generator{_generator.lock()};
     assert(generator != nullptr);
 
     // Paint
-    ui.inputChannel.paint();
-    ImGui::SameLine();
-    ui.inputEnabled.paint();
-    ui.outputChannel.paint();
-    ImGui::SameLine();
-    ui.outputEnabled.paint();
+    ImGui::BeginGroup();
+    ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+    ui.toInput.paint();
+    ImGui::PopItemWidth();
+    ui.channel.paint();
+    ImGui::PopItemWidth();
+    ImGui::EndGroup();
+    ui.enabled.paint();
     ui.amplitudeSlider.paint();
 
     // Handle
-    if (ui.inputEnabled.handle()) {
-      generator->setInputEnabled(ui.inputEnabled());
+    if (ui.enabled.handle()) {
+      generator->setEnabled(ui.enabled());
     }
 
-    if (ui.inputChannel.handle()) {
-      generator->setInputChannel(ui.inputChannel());
+    if (ui.toInput.handle()) {
+      generator->setSendToInput(ui.toInput());
     }
 
-    if (ui.outputEnabled.handle()) {
-      generator->setOutputEnabled(ui.outputEnabled());
-    }
-
-    if (ui.outputChannel.handle()) {
-      generator->setOutputChannel(ui.outputChannel());
+    if (ui.channel.handle()) {
+      generator->setChannel(ui.channel());
     }
 
     if (ui.amplitudeSlider.handle()) {
-      generator->setAmplitude(ui.amplitudeSlider());
+      generator->setAmplitudePercent(ui.amplitudeSlider());
     }
+  }
+
+protected:
+  void applyStreamConfig(const RtSoundSetup &setup) override {
+    const auto generator{_generator.lock()};
+    assert(generator != nullptr);
+
+    generator->setAmplitudePercent(ui.amplitudeSlider());
   }
 
   std::weak_ptr<T> _generator;
 
-protected:
   struct Ui {
-    Imw::CheckBox inputEnabled{"Input"};
-    Imw::CheckBox outputEnabled{"Output"};
-    Imw::SpinBox<int> inputChannel{"##"};
-    Imw::SpinBox<int> outputChannel{"##"};
-    Imw::Slider<int> amplitudeSlider{"Amplitude %"};
+    class InOutSwitch : public Imw::ComboBox<bool> {
+    public:
+      InOutSwitch() {
+        Imw::ComboBox<bool>::setValueList({{false, "Output"}, {true, "Input"}});
+      }
+    };
+
+    Imw::CheckBox enabled{"Enabled"};
+    InOutSwitch toInput{};
+    Imw::SpinBox<int> channel{"##"};
+    Imw::Slider<float> amplitudeSlider{"Amplitude %"};
 
     Ui() {
-      inputChannel.setValueLimits({0, 95});
-      outputChannel.setValueLimits({0, 95});
-      amplitudeSlider.setValueLimits({1, 95});
+      channel.setSameLine(true);
+      channel.setValueLimits({0, 100});
+      enabled.setSameLine(true);
+      amplitudeSlider.setValueLimits({1, 100});
       amplitudeSlider.setValue(1);
     }
   };

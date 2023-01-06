@@ -110,7 +110,8 @@ class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
 public:
   enum DeviceType { AllDevices, InputDevices, OutputDevices };
 
-  SoundDeviceCombo(DeviceType t = AllDevices) : _deviceType(t) {
+  SoundDeviceCombo(DeviceType t = AllDevices, bool displayAll = true)
+      : _deviceType(t), _displayAll(displayAll) {
     if (t == AllDevices) {
       _enabledFlag.setLabel("Audio Device");
     } else if (t == InputDevices) {
@@ -131,13 +132,14 @@ protected:
 private:
   const DeviceType _deviceType{AllDevices};
   Imw::CheckBox _enabledFlag;
+  bool _displayAll{};
 
   void
   updateSoundDevices(const std::vector<RtAudio::DeviceInfo> &devices) override {
     _valueList.clear();
     _valueList.reserve(devices.size());
     for (auto &device : devices) {
-      if (_deviceType == DeviceType::AllDevices) {
+      if (_deviceType == DeviceType::AllDevices || _displayAll) {
         _valueList.push_back({device, device.name});
       } else if (_deviceType == InputDevices &&
                  (device.inputChannels > 0 || device.duplexChannels > 0)) {

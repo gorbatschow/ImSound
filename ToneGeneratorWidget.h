@@ -1,18 +1,12 @@
 #pragma once
 #include "SoundGeneratorWidget.h"
-#include <ImWrapper.h>
 #include <RtSoundToneGen.h>
 #include <memory>
 
 class ToneGeneratorWidget : public SoundGeneratorWidget<RtSoundToneGen> {
 public:
   ToneGeneratorWidget(std::weak_ptr<RtSoundToneGen> generator_)
-      : SoundGeneratorWidget<RtSoundToneGen>(generator_) {
-    const auto generator{generator_.lock()};
-    assert(generator != nullptr);
-
-    generator->setFrequency(ui.frequencySlider());
-  }
+      : SoundGeneratorWidget<RtSoundToneGen>(generator_) {}
 
   ~ToneGeneratorWidget() override = default;
 
@@ -22,19 +16,35 @@ public:
 
     SoundGeneratorWidget::paint();
     ui.frequencySlider.paint();
+    ui.fequencyLabel.paint();
 
     if (ui.frequencySlider.handle()) {
-      generator->setFrequency(ui.frequencySlider());
+      generator->setFrequencyPercent(ui.frequencySlider());
+      ui.fequencyLabel.setValue(generator->frequencyHertz());
     }
   }
 
+protected:
+  void applyStreamConfig(const RtSoundSetup &setup) override {
+    SoundGeneratorWidget<RtSoundToneGen>::applyStreamConfig(setup);
+
+    const auto generator{_generator.lock()};
+    assert(generator != nullptr);
+
+    generator->setFrequencyPercent(ui.frequencySlider.value());
+  }
+
 private:
+  float _Fs{};
+
   struct Ui {
-    ImWrap::Slider<int> frequencySlider{"Frequency %"};
+    Imw::Slider<int> frequencySlider{"Frequency %"};
+    Imw::ValueLabel<float> fequencyLabel{"%.2f Hz"};
 
     Ui() {
-      frequencySlider.setValueLimits({1, 95});
-      frequencySlider.setValue(1);
+      frequencySlider.setValueLimits({1.0f, 100.0f});
+      frequencySlider.setValue(1.0f);
+      fequencyLabel.setSameLine(true);
     }
   };
   Ui ui;
