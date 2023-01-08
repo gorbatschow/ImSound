@@ -23,10 +23,10 @@ private:
 public:
   struct Ui {
     Ui(std::weak_ptr<RtSoundIO> soundIO) : streamStatusLine{soundIO} {
-      inputChannelsSpin.setValueLimitsA({1, 100});
-      inputChannelsSpin.setValueLimitsB({0, 100});
-      outputChannelsSpin.setValueLimitsA({1, 100});
-      outputChannelsSpin.setValueLimitsB({0, 100});
+      inputChannelsSpin.setValueLimits(0, {1, 100});
+      inputChannelsSpin.setValueLimits(1, {0, 100});
+      outputChannelsSpin.setValueLimits(0, {1, 100});
+      outputChannelsSpin.setValueLimits(1, {0, 100});
 
       restartEngineBtn.setSameLine(true);
       stopStreamBtn.setSameLine(true);
