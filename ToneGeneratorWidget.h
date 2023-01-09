@@ -28,10 +28,12 @@ protected:
   void applyStreamConfig(const RtSoundSetup &setup) override {
     SoundGeneratorWidget<RtSoundToneGen>::applyStreamConfig(setup);
 
-    const auto generator{_generator.lock()};
-    assert(generator != nullptr);
+    auto generator{_generator.lock()};
+    assert(generator);
 
+    generator->setSampleRate(setup.sampleRate());
     generator->setFrequencyPercent(ui.frequencySlider.value());
+    ui.fequencyLabel.setValue(generator->frequencyHertz());
   }
 
 private:
