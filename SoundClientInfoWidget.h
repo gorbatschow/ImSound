@@ -17,40 +17,29 @@ public:
   }
 
 private:
-  struct ClientInfo {
-    std::type_index typeId;
-    std::uintptr_t cliendId;
-    std::string name;
-    int priority{};
+  struct ClientTime {
+    std::weak_ptr<RtSoundClient> client;
     long time{};
-    bool exists{};
-    static inline const int NFIELDS{4};
-
-    bool operator==(const std::uintptr_t &id) { return (*this).cliendId == id; }
-    bool operator==(const std::weak_ptr<RtSoundClient> &ptr) {
-      return (*this).cliendId == ptr.lock()->clientId();
-    }
   };
-  std::vector<ClientInfo> _clients;
+  std::vector<ClientTime> _clientTime;
 
-  void applyStreamConfig(const RtSoundSetup &) override {
-    _clients.clear();
-    _clients.shrink_to_fit();
-    updateClientsTable();
-  }
-  void streamDataReady(const RtSoundData &) override { updateClientsTable(); }
-  void updateClientsTable();
-  void paintRow(const ClientInfo &info);
+  void applyStreamConfig(const RtSoundSetup &setup) override;
+  void streamDataReady(const RtSoundData &data) override;
+  long updateClientsTable();
+  void paintRow(const ClientTime &client);
 
   struct Ui {
     Imw::CheckBox holdTimeCheck{"Hold time"};
-    Imw::Button resetHold{"Reset hold"};
+    Imw::Button resetHold{"Reset"};
+    Imw::ValueLabel<int> tBufLabel{"Tbuf=%ld"};
+    Imw::ValueLabel<int> tPrcLabel{"Tprc=%ld"};
 
     Ui() {
       resetHold.setSameLine(true);
-      resetHold.setWidth(0.0f);
+      // resetHold.setWidth(0.0f);
+      tBufLabel.setSameLine(true);
+      tPrcLabel.setSameLine(true);
     }
   };
   Ui ui;
-  std::atomic_bool _holdTime{};
 };

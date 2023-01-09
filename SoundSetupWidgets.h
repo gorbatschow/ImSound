@@ -71,25 +71,11 @@ public:
 
 protected:
   void paintElement() override {
-    const auto soundIO{_io.lock().get()};
-    assert(soundIO != nullptr);
-    const auto &streamInfo{soundIO->streamInfo()};
+    const auto soundIO{_io.lock()};
+    assert(soundIO);
 
     if (soundIO->streamInfo().streamRunning()) {
-      if (_fpsCounter == 0) {
-        _fpsCounter = int(float(ImGui::GetIO().Framerate) / float(_updateRate));
-        _bufferTime = soundIO->streamInfo().bufferTime();
-        _processingTimeDisp = _processingTime;
-        _processingTime = 0;
-      } else {
-        _fpsCounter--;
-        _processingTime =
-            std::max(_processingTime, soundIO->streamInfo().processingTime());
-      }
-
-      ImGui::Text("Trun=%.1fs Tbuf=%lous Tprc=%lous",
-                  soundIO->streamInfo().streamTime(), _bufferTime,
-                  _processingTimeDisp);
+      ImGui::Text("Trun=%.1fs", soundIO->streamInfo().streamTime());
     } else {
       ImGui::Text("Stopped");
     }
@@ -97,10 +83,6 @@ protected:
 
 private:
   std::weak_ptr<RtSoundIO> _io;
-  int _updateRate{2};
-  int _fpsCounter{};
-  long _bufferTime{};
-  long _processingTime{}, _processingTimeDisp{};
 };
 
 // AudioDeviceCombo

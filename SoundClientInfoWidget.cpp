@@ -8,64 +8,87 @@ void SoundClientInfoWidget::paint() {
 
   ui.holdTimeCheck.paint();
   ui.resetHold.paint();
-
-  if (ui.holdTimeCheck.handle()) {
-    _holdTime.exchange(ui.holdTimeCheck());
-  }
+  ui.tBufLabel.paint();
+  ui.tPrcLabel.paint();
 
   if (ui.resetHold.handle()) {
-    std::for_each(_clients.begin(), _clients.end(),
-                  [](ClientInfo &info) { info.time = 0; });
+    std::for_each(_clientTime.begin(), _clientTime.end(),
+                  [](ClientTime &info) { info.time = 0; });
   }
 
-  if (ImGui::BeginTable("Client Info Table", ClientInfo::NFIELDS)) {
+  static const int tableCols{4};
+  static const ImGuiTableColumnFlags colFlags{ImGuiTableColumnFlags_WidthFixed};
+
+  if (ImGui::BeginTable("Client Info Table", tableCols)) {
     ImGui::TableSetupColumn("Name");
     ImGui::TableSetupColumn("Type");
-    ImGui::TableSetupColumn("Priority");
-    ImGui::TableSetupColumn("Time us");
+    ImGui::TableSetupColumn("Priority", colFlags, 50);
+    ImGui::TableSetupColumn("Time us", colFlags, 50);
     ImGui::TableHeadersRow();
-    for (const auto &info : _clients) {
-      paintRow(info);
+    for (const auto &ct : _clientTime) {
+      paintRow(ct);
     }
     ImGui::EndTable();
   }
 }
 
-void SoundClientInfoWidget::updateClientsTable() {
+void SoundClientInfoWidget::applyStreamConfig(const RtSoundSetup &setup) {
+  ui.tBufLabel.setValue(0);
+  ui.tPrcLabel.setValue(0);
+
+  const auto &provider{streamProvider()};
+  _clientTime.clear();
+  _clientTime.reserve(provider.clients().size());
+  for (const auto &clientPtr : provider.clients()) {
+    _clientTime.push_back({clientPtr, 0});
+  }
+}
+
+void SoundClientInfoWidget::streamDataReady(const RtSoundData &data) {
   const auto &provider{streamProvider()};
   std::lock_guard(provider.mutex);
 
-  std::for_each(_clients.begin(), _clients.end(),
-                [](ClientInfo &info) { info.exists = false; });
-  for (const auto &clientPtr : provider.clients()) {
-    const auto it{std::find(_clients.begin(), _clients.end(), clientPtr)};
-    const auto &client{*clientPtr.lock()};
-    if (it == _clients.end()) {
-      _clients.push_back({client.clientTypeId(), client.clientId(),
-                          client.clientName(), client.priority(),
-                          client.streamDataReadyTime(), true});
-    } else {
-      auto &info = (*it);
-      info.exists = true;
-      if (_holdTime.load()) {
-        info.time = std::max(client.streamDataReadyTime(), info.time);
-      } else {
-        info.time = client.streamDataReadyTime();
-      }
-    }
-  }
-  std::remove_if(_clients.begin(), _clients.end(),
-                 [](const ClientInfo &info) { return info.exists == false; });
+  ui.tBufLabel.setValue(data.framesT());
+  ui.tPrcLabel.setValue(updateClientsTable());
 }
 
-void SoundClientInfoWidget::paintRow(const ClientInfo &info) {
+long SoundClientInfoWidget::updateClientsTable() {
+  const auto &provider{streamProvider()};
+  long totalTime{0};
+  for (auto &ct : _clientTime) {
+    const auto client{ct.client.lock()};
+    if (!client) {
+      continue;
+    }
+    if (ui.holdTimeCheck()) {
+      ct.time = std::max(client->streamDataReadyTime(), ct.time);
+    } else {
+      ct.time = client->streamDataReadyTime();
+    }
+    totalTime += ct.time;
+  }
+
+  return totalTime;
+}
+
+void SoundClientInfoWidget::paintRow(const ClientTime &ct) {
+  const auto client{ct.client.lock()};
+  if (!client) {
+    assert(false);
+    return;
+  }
+
   ImGui::TableNextRow();
+  // name
   ImGui::TableNextColumn();
-  ImGui::TextUnformatted(info.name.c_str());
+  ImGui::TextUnformatted(client->clientName().c_str());
+  // type
   ImGui::TableNextColumn();
-  ImGui::TextUnformatted(info.typeId.name());
+  ImGui::TextUnformatted(client->clientTypeId().name());
+  // priority
   ImGui::TableNextColumn();
-  ImGui::Text("%d", info.priority);
+  ImGui::Text("%d", client->priority());
+  // time
   ImGui::TableNextColumn();
-  ImGui::Text("%ld", info.time);
+  ImGui::Text("%ld", ct.time);
 }
