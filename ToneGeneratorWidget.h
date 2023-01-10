@@ -31,7 +31,6 @@ protected:
     auto generator{_generator.lock()};
     assert(generator);
 
-    generator->setSampleRate(setup.sampleRate());
     generator->setFrequencyPercent(ui.frequencySlider.value());
     ui.fequencyLabel.setValue(generator->frequencyHertz());
   }
