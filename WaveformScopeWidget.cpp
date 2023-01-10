@@ -5,7 +5,9 @@
 #include <mutex>
 #include <numeric>
 
-WaveformScopeWidget::WaveformScopeWidget(const std::string &name) : ui(name) {
+WaveformScopeWidget::WaveformScopeWidget(const std::string &name,
+                                         const ImVec4 &color)
+    : ui(name), _color(color) {
   _xDataPlt.resize(PlotMaxPts);
   _xDataPlt.shrink_to_fit();
   _yDataPlt.resize(PlotMaxPts);
@@ -19,11 +21,13 @@ WaveformScopeWidget::WaveformScopeWidget(const std::string &name) : ui(name) {
 
 void WaveformScopeWidget::paint() {
   // Paint
+  ImGui::PushStyleColor(ImGuiCol_CheckMark, _color);
   ui.enabledCheck.paint();
   ui.sourceCombo.paint();
   ui.channelSpin.paint();
   ui.memorySpin.paint();
   ui.rangeSlider.paint();
+  ImGui::PopStyleColor();
 
   // Handle
   if (ui.enabledCheck.handle()) {
@@ -61,6 +65,7 @@ void WaveformScopeWidget::plot() {
   const int xmax{std::clamp(int(xlimf.Max) + 1, 0, int(_xData.size()) - 1)};
   const int npts{std::clamp(int(xmax - xmin + 1), 0, int(_xData.size()))};
 
+  ImPlot::PushStyleColor(ImPlotCol_Line, _color);
   if (npts > PlotMaxPts) {
     std::lock_guard lock(streamData().mutex);
     DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
@@ -73,6 +78,7 @@ void WaveformScopeWidget::plot() {
     std::lock_guard lock(streamData().mutex);
     ImPlot::PlotStems(label().c_str(), &_xData[xmin], &_yData[xmin], npts);
   }
+  ImPlot::PopStyleColor();
 
   //  std::lock_guard lock(streamData().mutex);
   //  ImPlot::PlotLine(label().c_str(), _xData.data(), _yData.data(),

@@ -7,21 +7,25 @@
 
 class WaveformScopeWidget : public RtSoundClient {
 public:
-  WaveformScopeWidget(const std::string &name);
+  WaveformScopeWidget(const std::string &name,
+                      const ImVec4 &color = {0.0, 0.0, 1.0, 1.0});
   ~WaveformScopeWidget() = default;
 
   void paint();
   void plot();
 
-  inline const std::string label() const { return ui.enabledCheck.label(); }
+  inline const std::string &label() const { return ui.enabledCheck.label(); }
+  inline const ImVec4 &color() const { return _color; }
+
   inline bool enabled() const { return _enabled.load(); }
   inline bool isInput() const { return !_isOutput.load(); }
   inline bool isOutput() const { return _isOutput.load(); }
   inline int channel() const { return _channel.load(); }
   inline int memory() const { return _memory.load(); }
-  inline int dataSize() { return _dataSize.load(); };
-  inline int bufferSize() { return streamSetup().bufferFrames(); }
-  inline float range() const { return 1.0f / float(ui.rangeSlider.value()); };
+
+  inline float rangeY() const { return 1.0f / float(ui.rangeSlider.value()); };
+  inline float rangeX() const { return float(_dataSize.load()); }
+  inline float rangeXB() const { return float(streamSetup().bufferFrames()); }
 
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
@@ -34,6 +38,7 @@ protected:
 private:
   inline static const int PlotMaxPts{1024};
   inline static const int StemMaxPts{128};
+  const ImVec4 _color{};
 
   std::vector<float> _xData, _yData;
   std::vector<float> _xDataPlt, _yDataPlt;

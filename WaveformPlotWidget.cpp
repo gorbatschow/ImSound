@@ -26,17 +26,17 @@ void WaveformPlotWidget::paint() {
   ui.quartWidthBtn.paint();
   ui.eighthWidthBtn.paint();
 
-  const float bufferRange{float(scopeA.bufferSize())};
-  const float dataRange{[&]() {
+  const float xRange{[&]() {
     if (_scopeA->enabled() && _scopeB->enabled()) {
-      return float(std::max(scopeA.dataSize(), scopeB.dataSize()));
+      return std::max(scopeA.rangeX(), scopeB.rangeX());
     } else if (_scopeA->enabled() && !_scopeB->enabled()) {
-      return float(scopeA.dataSize());
+      return float(scopeA.rangeX());
     } else if (!_scopeA->enabled() && _scopeB->enabled()) {
-      return float(scopeB.dataSize());
+      return float(scopeB.rangeX());
     }
-    return float(scopeA.dataSize());
+    return float(scopeA.rangeX());
   }()};
+  const float xbRange{float(scopeA.rangeXB())};
 
   const auto flags_plt{ImPlotFlags_NoTitle | ImPlotFlags_NoLegend |
                        ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect};
@@ -66,14 +66,21 @@ void WaveformPlotWidget::paint() {
                         ImPlotAxisFlags_NoSideSwitch |
                         ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock};
 
-    ImPlot::SetupAxis(ImAxis_X1, "Buffer Samples", flaxs_x1);
+    ImPlot::SetupAxis(ImAxis_X1, "Samples", flaxs_x1);
+
+    ImPlot::PushStyleColor(ImPlotCol_AxisText, scopeA.color());
     ImPlot::SetupAxis(ImAxis_Y1, scopeA.label().c_str(), flags_y1);
+    ImPlot::PopStyleColor();
+
+    ImPlot::PushStyleColor(ImPlotCol_AxisText, scopeB.color());
     ImPlot::SetupAxis(ImAxis_Y2, scopeB.label().c_str(), flags_y2);
+    ImPlot::PopStyleColor();
+
     ImPlot::SetupAxis(ImAxis_Y3, scopeC.label().c_str(), flags_y3);
 
     // X Axis Limits
     // -------------------------------------------------------------------------
-    ImPlot::SetupAxisLimits(ImAxis_X1, 0.0f, dataRange - 1.0f, ImGuiCond_Once);
+    ImPlot::SetupAxisLimits(ImAxis_X1, 0.0f, xRange, ImGuiCond_Once);
 
     if (ui.maxWidthBtn.handle()) {
       ImPlot::SetupAxisLimits(ImAxis_X1, _axisX.limsMaxMin(),
@@ -138,48 +145,50 @@ void WaveformPlotWidget::paint() {
 
     if (_scopeA->enabled() && _scopeB->enabled() && _scopeC->enabled()) {
 
-      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->range() * 5.0f,
-                              _scopeA->range(), ImPlotCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->rangeY() * 5.0f,
+                              _scopeA->rangeY(), ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->range(),
-                              _scopeB->range() * 5.0f, ImPlotCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->rangeY(),
+                              _scopeB->rangeY() * 5.0f, ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->range() * 3.0f,
-                              _scopeC->range() * 3.0f, ImPlotCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->rangeY() * 3.0f,
+                              _scopeC->rangeY() * 3.0f, ImPlotCond_Always);
 
     } else if (_scopeA->enabled() && _scopeB->enabled()) {
 
-      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->range() * 3.0f,
-                              _scopeA->range(), ImPlotCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->rangeY() * 3.0f,
+                              _scopeA->rangeY(), ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->range(),
-                              _scopeB->range() * 3.0f, ImPlotCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->rangeY(),
+                              _scopeB->rangeY() * 3.0f, ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->range(), _scopeC->range(),
+      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->rangeY(), _scopeC->rangeY(),
                               ImPlotCond_Always);
 
     } else {
 
-      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->range(), _scopeA->range(),
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -_scopeA->rangeY(), _scopeA->rangeY(),
                               ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->range(), _scopeB->range(),
+      ImPlot::SetupAxisLimits(ImAxis_Y2, -_scopeB->rangeY(), _scopeB->rangeY(),
                               ImPlotCond_Always);
 
-      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->range(), _scopeC->range(),
+      ImPlot::SetupAxisLimits(ImAxis_Y3, -_scopeC->rangeY(), _scopeC->rangeY(),
                               ImPlotCond_Always);
     }
 
     // Plot
     // -------------------------------------------------------------------------
+
     ImPlot::SetAxis(ImAxis_Y1);
     _scopeA->plot();
+
     ImPlot::SetAxis(ImAxis_Y2);
     _scopeB->plot();
     ImPlot::SetAxis(ImAxis_Y3);
     _scopeC->plot();
 
-    _axisX = {ImPlot::GetPlotLimits(ImAxis_X1), dataRange, bufferRange};
+    _axisX = {ImPlot::GetPlotLimits(ImAxis_X1), xRange, xbRange};
 
     ImPlot::EndPlot();
   }

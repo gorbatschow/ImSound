@@ -22,9 +22,12 @@ public:
   }
 
 private:
-  std::shared_ptr<WaveformScopeWidget> _scopeA{new WaveformScopeWidget("A")};
-  std::shared_ptr<WaveformScopeWidget> _scopeB{new WaveformScopeWidget("B")};
-  std::shared_ptr<WaveformScopeWidget> _scopeC{new WaveformScopeWidget("C")};
+  std::shared_ptr<WaveformScopeWidget> _scopeA{
+      new WaveformScopeWidget("A", {1.0, 1.0, 0.0, 1.0})};
+  std::shared_ptr<WaveformScopeWidget> _scopeB{
+      new WaveformScopeWidget("B", {0.0, 1.0, 1.0, 1.0})};
+  std::shared_ptr<WaveformScopeWidget> _scopeC{
+      new WaveformScopeWidget("C", {1.0, 0.0, 1.0, 1.0})};
   WaveformAxisX _axisX;
 
   struct Ui {
