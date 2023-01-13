@@ -15,12 +15,20 @@ public:
     assert(generator != nullptr);
 
     SoundGeneratorWidget::paint();
-    ui.frequencySlider.paint();
-    ui.fequencyLabel.paint();
+    ui.frequencyModeRadio.paint();
+    if (ui.frequencyModeRadio() == 0) {
+      ui.frequencyPercentSlider.paint();
+    } else if (ui.frequencyModeRadio() == 1) {
+      ui.frequencyIndexSpin.paint();
+    } else {
+      ui.frequencyExactSpin.paint();
+    }
 
-    if (ui.frequencySlider.handle()) {
-      generator->setFrequencyPercent(ui.frequencySlider());
-      ui.fequencyLabel.setValue(generator->frequencyHertz());
+    // ui.frequencyLabel.paint();
+
+    if (ui.frequencyPercentSlider.handle()) {
+      generator->setFrequencyPercent(ui.frequencyPercentSlider());
+      ui.frequencyLabel.setValue(generator->frequencyHertz());
     }
   }
 
@@ -31,21 +39,25 @@ protected:
     auto generator{_generator.lock()};
     assert(generator);
 
-    generator->setFrequencyPercent(ui.frequencySlider.value());
-    ui.fequencyLabel.setValue(generator->frequencyHertz());
+    generator->setFrequencyPercent(ui.frequencyPercentSlider.value());
+    ui.frequencyLabel.setValue(generator->frequencyHertz());
   }
 
 private:
-  float _Fs{};
-
   struct Ui {
-    Imw::Slider<int> frequencySlider{"Frequency %"};
-    Imw::ValueLabel<float> fequencyLabel{"%.2f Hz"};
+    Imw::Slider<float> frequencyPercentSlider{"Frequency %"};
+    Imw::SpinBox<int> frequencyIndexSpin{"Frequency Idx"};
+    Imw::SpinBox<float> frequencyExactSpin{"Frequency Hz"};
+    Imw::ValueLabel<float> frequencyLabel{"%.2f Hz"};
+    Imw::MultiRadioButton frequencyModeRadio{{"Percent", "Index", "Exact"},
+                                             "Frequency Mode"};
 
     Ui() {
-      frequencySlider.setValueLimits({1.0f, 100.0f});
-      frequencySlider.setValue(1.0f);
-      fequencyLabel.setSameLine(true);
+      frequencyPercentSlider.setValueLimits({1e-3f, 1e2f});
+      frequencyPercentSlider.setValue(1.0f);
+      frequencyPercentSlider.setTextFormat("%.2f");
+      frequencyExactSpin.setTextFormat("%.2f");
+      // frequencyLabel.setSameLine(true);
     }
   };
   Ui ui;

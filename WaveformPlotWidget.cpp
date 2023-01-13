@@ -66,16 +66,20 @@ void WaveformPlotWidget::paint() {
                         ImPlotAxisFlags_NoSideSwitch |
                         ImPlotAxisFlags_NoHighlight | ImPlotAxisFlags_Lock};
 
+    // Setup X1
     ImPlot::SetupAxis(ImAxis_X1, "Samples", flaxs_x1);
 
+    // Setup Y1
     ImPlot::PushStyleColor(ImPlotCol_AxisText, scopeA.color());
     ImPlot::SetupAxis(ImAxis_Y1, scopeA.label().c_str(), flags_y1);
     ImPlot::PopStyleColor();
 
+    // Setup Y2
     ImPlot::PushStyleColor(ImPlotCol_AxisText, scopeB.color());
     ImPlot::SetupAxis(ImAxis_Y2, scopeB.label().c_str(), flags_y2);
     ImPlot::PopStyleColor();
 
+    // Setup Y3
     ImPlot::SetupAxis(ImAxis_Y3, scopeC.label().c_str(), flags_y3);
 
     // X Axis Limits
@@ -182,7 +186,6 @@ void WaveformPlotWidget::paint() {
 
     ImPlot::SetAxis(ImAxis_Y1);
     _scopeA->plot();
-
     ImPlot::SetAxis(ImAxis_Y2);
     _scopeB->plot();
     ImPlot::SetAxis(ImAxis_Y3);

@@ -15,9 +15,10 @@ public:
     std::vector<RtAudio::Api> rtAPIs;
     RtAudio::getCompiledApi(rtAPIs);
     _valueList.resize(rtAPIs.size());
-    for (size_t i = 0; i != rtAPIs.size(); ++i) {
-      _valueList[i] = {rtAPIs[i], RtAudio::getApiDisplayName(rtAPIs[i])};
-    }
+    std::transform(
+        rtAPIs.begin(), rtAPIs.end(), _valueList.begin(), [](RtAudio::Api api) {
+          return Imw::NamedValue{api, RtAudio::getApiDisplayName(api)};
+        });
   }
 
 protected:
@@ -28,7 +29,6 @@ protected:
 class SampleRateCombo : public Imw::ComboBox<int> {
 public:
   SampleRateCombo() {
-    _currIndex = 0;
     _label = "Sample Rate (Hz)";
     _valueList = {{192000, "192k"}, {96000, "96k"}, {48000, "48k"},
                   {44100, "44.1k"}, {24000, "24k"}, {12000, "12k"}};
@@ -54,7 +54,7 @@ public:
     ImGui::Text("%d", _value);
   }
 
-  void setValue(const int &value) override {
+  virtual void setValue(const int &value, int) override {
     _powerOfTwo = int(std::log2(double(value)));
   }
 

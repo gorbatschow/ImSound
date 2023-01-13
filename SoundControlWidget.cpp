@@ -52,13 +52,13 @@ void SoundControlWidget::paint() {
 void SoundControlWidget::configureStream(RtSoundSetup &setup) {
   setup.setInputEnabled(ui.inputDeviceCombo->deviceEnabled());
   setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);
-  setup.setInputChannels(ui.inputChannelsSpin().at(0));
-  setup.setInputFirstChannel(ui.inputChannelsSpin().at(1));
+  setup.setInputChannels(ui.inputChannelsSpin(0));
+  setup.setInputFirstChannel(ui.inputChannelsSpin(1));
 
   setup.setOutputEnabled(ui.outputDeviceCombo->deviceEnabled());
   setup.setOutputDeviceId((*ui.outputDeviceCombo)().ID);
-  setup.setOutputChannels(ui.inputChannelsSpin().at(0));
-  setup.setOutputFirstChannel(ui.outputChannelsSpin().at(1));
+  setup.setOutputChannels(ui.inputChannelsSpin(0));
+  setup.setOutputFirstChannel(ui.outputChannelsSpin(1));
 
   setup.setSampleRate(ui.sampleRateCombo());
   setup.setBufferFrames(ui.bufferFramesInput());

@@ -7,7 +7,7 @@ template <class T> class SoundGeneratorWidget : public RtSoundClient {
 public:
   SoundGeneratorWidget(std::weak_ptr<T> generator_) : _generator(generator_) {
     const auto generator{_generator.lock()};
-    assert(generator != nullptr);
+    assert(generator);
   }
 
   virtual ~SoundGeneratorWidget() = default;
@@ -72,8 +72,9 @@ protected:
       channel.setSameLine(true);
       channel.setValueLimits({0, 100});
       enabled.setSameLine(true);
-      amplitudeSlider.setValueLimits({1, 100});
-      amplitudeSlider.setValue(1);
+      amplitudeSlider.setValueLimits({1e-3f, 1e2f});
+      amplitudeSlider.setValue(1.0f);
+      amplitudeSlider.setTextFormat("%.2f");
     }
   };
   Ui ui;

@@ -72,19 +72,19 @@ private:
       channelSpin.setWidth(100.f);
       channelSpin.setSameLine(true);
       channelSpin.setSameLineSpacing(25.0f);
-      channelSpin.setValueLimits({0, 95});
+      channelSpin.setValueLimits({0, 100});
 
       memorySpin.setLabel("Memory " + name);
       memorySpin.setWidth(100.0f);
       memorySpin.setSameLine(true);
       memorySpin.setSameLineSpacing(25.0f);
-      memorySpin.setValueLimits({1, 95});
+      memorySpin.setValueLimits({1, 100});
 
       rangeSlider.setLabel("Range " + name);
       rangeSlider.setSameLine(true);
       rangeSlider.setWidth(-70.0f);
       rangeSlider.setSameLineSpacing(25.0f);
-      rangeSlider.setValueLimits({1, 95});
+      rangeSlider.setValueLimits({1, 100});
     }
   };
   Ui ui;

@@ -23,10 +23,10 @@ private:
 public:
   struct Ui {
     Ui(std::weak_ptr<RtSoundIO> soundIO) : streamStatusLine{soundIO} {
-      inputChannelsSpin.setValueLimits(0, {1, 100});
-      inputChannelsSpin.setValueLimits(1, {0, 100});
-      outputChannelsSpin.setValueLimits(0, {1, 100});
-      outputChannelsSpin.setValueLimits(1, {0, 100});
+      inputChannelsSpin.setValueLimits({1, 100}, 0);
+      inputChannelsSpin.setValueLimits({0, 100}, 1);
+      outputChannelsSpin.setValueLimits({1, 100}, 0);
+      outputChannelsSpin.setValueLimits({0, 100}, 1);
 
       restartEngineBtn.setSameLine(true);
       stopStreamBtn.setSameLine(true);
@@ -43,8 +43,8 @@ public:
     Imw::Button startStreamBtn{"Start"};
     Imw::Button stopStreamBtn{"Stop"};
     Imw::Button shotStreamBtn{"Shot"};
-    Imw::SpinBoxAB<int> inputChannelsSpin{"Num. Inputs / First Input"};
-    Imw::SpinBoxAB<int> outputChannelsSpin{"Num. Outputs / First Output"};
+    Imw::MultiSpinBox<int> inputChannelsSpin{2, "Num. Inputs / First Input"};
+    Imw::MultiSpinBox<int> outputChannelsSpin{2, "Num. Outputs / First Output"};
     Imw::CheckBox realtimeCheck{"Realtime"};
     Imw::CheckBox minLatencyCheck{"Min. Latency"};
     Imw::CheckBox exclusiveCheck{"Exclusive"};
