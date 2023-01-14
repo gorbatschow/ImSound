@@ -11,6 +11,7 @@ set(IMSOUNDWIDGETS_SOURCES
     SoundClientInfoWidget.cpp
     WaveformScopeWidget.cpp
     WaveformPlotWidget.cpp
+    ToneGeneratorWidget.cpp
 )
 
 add_library(${PROJECT_NAME} ${IMSOUNDWIDGETS_SOURCES})
