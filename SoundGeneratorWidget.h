@@ -17,31 +17,35 @@ public:
     assert(generator != nullptr);
 
     // Paint
-    ImGui::BeginGroup();
     ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
-    ui.toInput.paint();
+    ui.toInputSwitch.paint();
     ImGui::PopItemWidth();
-    ui.channel.paint();
+    ui.channelEdit.paint();
     ImGui::PopItemWidth();
-    ImGui::EndGroup();
-    ui.enabled.paint();
-    ui.amplitudeSlider.paint();
+    ui.enabledFlag.paint();
+    ui.gateEdit.paint();
+    ui.gateEnabledFlag.paint();
+    ui.amplitudeEdit.paint();
 
     // Handle
-    if (ui.enabled.handle()) {
-      generator->setEnabled(ui.enabled());
+    if (ui.enabledFlag.handle()) {
+      generator->setEnabled(ui.enabledFlag());
     }
-
-    if (ui.toInput.handle()) {
-      generator->setSendToInput(ui.toInput());
+    if (ui.toInputSwitch.handle()) {
+      generator->setSendToInput(ui.toInputSwitch());
     }
-
-    if (ui.channel.handle()) {
-      generator->setChannel(ui.channel());
+    if (ui.channelEdit.handle()) {
+      generator->setChannel(ui.channelEdit());
     }
-
-    if (ui.amplitudeSlider.handle()) {
-      generator->setAmplitudePercent(ui.amplitudeSlider());
+    if (ui.gateEnabledFlag.handle()) {
+      generator->setGateEnabled(ui.gateEnabledFlag());
+    }
+    if (ui.gateEdit.handle()) {
+      generator->setGateOpenFrame(ui.gateEdit(0));
+      generator->setGateFrameCount(ui.gateEdit(1));
+    }
+    if (ui.amplitudeEdit.handle()) {
+      generator->setAmplitudePercent(ui.amplitudeEdit());
     }
   }
 
@@ -50,7 +54,12 @@ protected:
     const auto generator{_generator.lock()};
     assert(generator != nullptr);
 
-    generator->setAmplitudePercent(ui.amplitudeSlider());
+    ui.enabledFlag.trigger();
+    ui.toInputSwitch.trigger();
+    ui.channelEdit.trigger();
+    ui.gateEnabledFlag.trigger();
+    ui.gateEdit.trigger();
+    ui.amplitudeEdit.trigger();
   }
 
   std::weak_ptr<T> _generator;
@@ -63,18 +72,22 @@ protected:
       }
     };
 
-    Imw::CheckBox enabled{"Enabled"};
-    InOutSwitch toInput{};
-    Imw::SpinBox<int> channel{"##"};
-    Imw::Slider<float> amplitudeSlider{"Amplitude %"};
+    Imw::CheckBox enabledFlag{"Enabled"};
+    InOutSwitch toInputSwitch{};
+    Imw::SpinBox<int> channelEdit{"##"};
+    Imw::MultiSpinBox<int> gateEdit{2};
+    Imw::CheckBox gateEnabledFlag{"Gate Frame Open/Count"};
+    Imw::Slider<float> amplitudeEdit{"Amplitude %"};
 
     Ui() {
-      channel.setSameLine(true);
-      channel.setValueLimits({0, 100});
-      enabled.setSameLine(true);
-      amplitudeSlider.setValueLimits({1e-3f, 1e2f});
-      amplitudeSlider.setValue(1.0f);
-      amplitudeSlider.setTextFormat("%.2f");
+      channelEdit.setSameLine(true);
+      channelEdit.setValueLimits({0, 100});
+      channelEdit.setSameLineSpacing(ImGuiStyle().ItemInnerSpacing.x);
+      enabledFlag.setSameLine(true);
+      amplitudeEdit.setValueLimits({1e-3f, 1e2f});
+      amplitudeEdit.setValue(1.0f);
+      amplitudeEdit.setTextFormat("%.2f");
+      gateEnabledFlag.setSameLine(true);
     }
   };
   Ui ui;
