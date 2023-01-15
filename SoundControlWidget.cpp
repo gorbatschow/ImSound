@@ -29,14 +29,18 @@ void SoundControlWidget::paint() {
   ui.minLatencyCheck.paint();
   ui.exclusiveCheck.paint();
   ImGui::Separator();
-  ui.startStreamBtn.paint();
-  ui.stopStreamBtn.paint();
+  ui.setupStreamBtn.paint();
   ui.shotStreamBtn.paint();
+  ui.stopStreamBtn.paint();
+  ui.startStreamBtn.paint();
   ui.streamStatusLine.paint();
 
   // Handle
   if (ui.restartEngineBtn.handle()) {
     soundIO->startSoundEngine(ui.audioApiCombo());
+  }
+  if (ui.setupStreamBtn.handle()) {
+    soundIO->setupSoundStream();
   }
   if (ui.startStreamBtn.handle()) {
     soundIO->startSoundStream();

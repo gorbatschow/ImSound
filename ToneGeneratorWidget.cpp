@@ -21,15 +21,14 @@ void ToneGeneratorWidget::paint() {
   // Handle
   if (ui.frequencyModeRadio.handle()) {
     if (ui.frequencyModeRadio() == 0) {
-      generator->setFrequencyIndex(ui.frequencyIndexSpin());
+      ui.frequencyIndexSpin.trigger();
     } else if (ui.frequencyModeRadio() == 1) {
-      generator->setFrequencyHertz(ui.frequencyHertzSpin());
+      ui.frequencyHertzSpin.trigger();
     } else if (ui.frequencyModeRadio() == 2) {
-      generator->setFrequencyPercent(ui.frequencyNormalSlider());
+      ui.frequencyNormalSlider.trigger();
     } else {
       assert(false);
     }
-    ui.frequencyHertzLabel.setValue(generator->frequencyHertz());
   }
 
   if (ui.frequencyIndexSpin.handle()) {
@@ -54,6 +53,5 @@ void ToneGeneratorWidget::applyStreamConfig(const RtSoundSetup &setup) {
   auto generator{_generator.lock()};
   assert(generator);
 
-  generator->setFrequencyPercent(ui.frequencyNormalSlider.value());
-  ui.frequencyHertzLabel.setValue(generator->frequencyHertz());
+  ui.frequencyModeRadio.trigger();
 }

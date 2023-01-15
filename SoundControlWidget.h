@@ -31,6 +31,7 @@ public:
       restartEngineBtn.setSameLine(true);
       stopStreamBtn.setSameLine(true);
       shotStreamBtn.setSameLine(true);
+      startStreamBtn.setSameLine(true);
       streamStatusLine.setSameLine(true);
       realtimeCheck.setSameLine(true);
       minLatencyCheck.setSameLine(true);
@@ -40,6 +41,7 @@ public:
     }
 
     Imw::Button restartEngineBtn{"Restart"};
+    Imw::Button setupStreamBtn{"Setup"};
     Imw::Button startStreamBtn{"Start"};
     Imw::Button stopStreamBtn{"Stop"};
     Imw::Button shotStreamBtn{"Shot"};
