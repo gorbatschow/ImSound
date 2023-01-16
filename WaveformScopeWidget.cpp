@@ -64,21 +64,21 @@ void WaveformScopeWidget::plot() {
   const int xmax{std::clamp(int(xlimf.Max) + 1, 0, dataSize - 1)};
   const int npts{std::clamp(int(xmax - xmin + 1), 0, dataSize)};
 
-  const auto intervalCounter{_intervalCounter.load()};
-  if (intervalCounter == 0) {
-    std::lock_guard lock(clientMutex);
-    if (npts > PlotMaxPts) {
-      DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
-                     &_yDataPlt[0], PlotMaxPts);
-    } else {
-      std::copy(&_xData[xmin], &_xData[xmin] + npts, &_xDataPlt[0]);
-      std::copy(&_yData[xmin], &_yData[xmin] + npts, &_yDataPlt[0]);
-    }
-  }
-
-  ImPlot::PushStyleColor(ImPlotCol_Line, _color);
   {
     std::lock_guard lock(clientMutex);
+
+    const auto intervalCounter{_intervalCounter.load()};
+    if (intervalCounter == 0) {
+      if (npts > PlotMaxPts) {
+        DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
+                       &_yDataPlt[0], PlotMaxPts);
+      } else {
+        std::copy(&_xData[xmin], &_xData[xmin] + npts, &_xDataPlt[0]);
+        std::copy(&_yData[xmin], &_yData[xmin] + npts, &_yDataPlt[0]);
+      }
+    }
+
+    ImPlot::PushStyleColor(ImPlotCol_Line, _color);
     if (npts > StemMaxPts) {
       ImPlot::PlotLine(label().c_str(), &_xDataPlt[0], &_yDataPlt[0],
                        std::min(npts, PlotMaxPts));
@@ -86,8 +86,8 @@ void WaveformScopeWidget::plot() {
       ImPlot::PlotStems(label().c_str(), &_xDataPlt[0], &_yDataPlt[0],
                         std::min(npts, PlotMaxPts));
     }
+    ImPlot::PopStyleColor();
   }
-  ImPlot::PopStyleColor();
 }
 
 void WaveformScopeWidget::applyStreamConfig(const RtSoundSetup &setup) {
@@ -106,18 +106,19 @@ void WaveformScopeWidget::streamDataReady(const RtSoundData &data) {
     return;
   }
 
-  const auto buffer{isInput ? data.inputBuffer(channel)
-                            : data.outputBuffer(channel)};
   {
     std::lock_guard lock(clientMutex);
+
+    const auto buffer{isInput ? data.inputBuffer(channel)
+                              : data.outputBuffer(channel)};
     std::copy(buffer, buffer + data.framesN(), _yData.rbegin());
     std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
                 _yData.rend());
-  }
 
-  const auto interval{_updateInterval.load()};
-  if (++_intervalCounter >= interval) {
-    _intervalCounter.exchange(0);
+    const auto interval{_updateInterval.load()};
+    if (++_intervalCounter >= interval) {
+      _intervalCounter.exchange(0);
+    }
   }
 }
 
