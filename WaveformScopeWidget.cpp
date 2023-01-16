@@ -9,12 +9,10 @@ WaveformScopeWidget::WaveformScopeWidget(const std::string &name,
                                          const ImVec4 &color)
     : ui(name), _color(color) {
   _xDataPlt.resize(PlotMaxPts);
-  _xDataPlt.shrink_to_fit();
   _yDataPlt.resize(PlotMaxPts);
-  _yDataPlt.shrink_to_fit();
 
   _enabled.exchange(ui.enabledCheck());
-  _isOutput.exchange(ui.sourceCombo());
+  _isInput.exchange(ui.sourceCombo());
   _channel.exchange(ui.channelSpin());
   _memory.exchange(ui.memorySpin());
 }
@@ -32,25 +30,25 @@ void WaveformScopeWidget::paint() {
   // Handle
   if (ui.enabledCheck.handle()) {
     _enabled.exchange(ui.enabledCheck());
-    std::lock_guard lock(streamData().mutex);
+    std::lock_guard lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.sourceCombo.handle()) {
-    _isOutput.exchange(ui.sourceCombo());
-    std::lock_guard lock(streamData().mutex);
+    _isInput.exchange(ui.sourceCombo());
+    std::lock_guard lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.channelSpin.handle()) {
     _channel.exchange(ui.channelSpin());
-    std::lock_guard lock(streamData().mutex);
+    std::lock_guard lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.memorySpin.handle()) {
     _memory.exchange(ui.memorySpin());
-    std::lock_guard lock(streamData().mutex);
+    std::lock_guard lock(clientMutex);
     adjustDataSize();
   }
 }
@@ -60,29 +58,36 @@ void WaveformScopeWidget::plot() {
     return;
   }
 
+  const auto dataSize{_dataSize.load()};
   const auto xlimf{ImPlot::GetPlotLimits().X};
-  const int xmin{std::clamp(int(xlimf.Min) - 1, 0, int(_xData.size()) - 1)};
-  const int xmax{std::clamp(int(xlimf.Max) + 1, 0, int(_xData.size()) - 1)};
-  const int npts{std::clamp(int(xmax - xmin + 1), 0, int(_xData.size()))};
+  const int xmin{std::clamp(int(xlimf.Min) - 1, 0, dataSize - 1)};
+  const int xmax{std::clamp(int(xlimf.Max) + 1, 0, dataSize - 1)};
+  const int npts{std::clamp(int(xmax - xmin + 1), 0, dataSize)};
+
+  const auto intervalCounter{_intervalCounter.load()};
+  if (intervalCounter == 0) {
+    std::lock_guard lock(clientMutex);
+    if (npts > PlotMaxPts) {
+      DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
+                     &_yDataPlt[0], PlotMaxPts);
+    } else {
+      std::copy(&_xData[xmin], &_xData[xmin] + npts, &_xDataPlt[0]);
+      std::copy(&_yData[xmin], &_yData[xmin] + npts, &_yDataPlt[0]);
+    }
+  }
 
   ImPlot::PushStyleColor(ImPlotCol_Line, _color);
-  if (npts > PlotMaxPts) {
-    std::lock_guard lock(streamData().mutex);
-    DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
-                   &_yDataPlt[0], PlotMaxPts);
-    ImPlot::PlotLine(label().c_str(), &_xDataPlt[0], &_yDataPlt[0], PlotMaxPts);
-  } else if (npts > StemMaxPts) {
-    std::lock_guard lock(streamData().mutex);
-    ImPlot::PlotLine(label().c_str(), &_xData[xmin], &_yData[xmin], npts);
-  } else {
-    std::lock_guard lock(streamData().mutex);
-    ImPlot::PlotStems(label().c_str(), &_xData[xmin], &_yData[xmin], npts);
+  {
+    std::lock_guard lock(clientMutex);
+    if (npts > StemMaxPts) {
+      ImPlot::PlotLine(label().c_str(), &_xDataPlt[0], &_yDataPlt[0],
+                       std::min(npts, PlotMaxPts));
+    } else {
+      ImPlot::PlotStems(label().c_str(), &_xDataPlt[0], &_yDataPlt[0],
+                        std::min(npts, PlotMaxPts));
+    }
   }
   ImPlot::PopStyleColor();
-
-  //  std::lock_guard lock(streamData().mutex);
-  //  ImPlot::PlotLine(label().c_str(), _xData.data(), _yData.data(),
-  //                   _yData.size());
 }
 
 void WaveformScopeWidget::applyStreamConfig(const RtSoundSetup &setup) {
@@ -94,26 +99,31 @@ void WaveformScopeWidget::streamDataReady(const RtSoundData &data) {
     return;
   }
 
-  if (!_isOutput && _channel < data.inputsN()) {
-    std::lock_guard lock(data.mutex);
-    std::copy(data.inputBuffer(_channel),
-              data.inputBuffer(_channel) + data.framesN(), _yData.rbegin());
+  const auto isInput{_isInput.load()};
+  const auto channel{_channel.load()};
+
+  if (!data.hasChannel(isInput, channel)) {
+    return;
+  }
+
+  const auto buffer{isInput ? data.inputBuffer(channel)
+                            : data.outputBuffer(channel)};
+  {
+    std::lock_guard lock(clientMutex);
+    std::copy(buffer, buffer + data.framesN(), _yData.rbegin());
     std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
                 _yData.rend());
-  } else if (_isOutput && _channel < data.outputsN()) {
-    std::lock_guard lock(data.mutex);
-    std::copy(data.outputBuffer(_channel),
-              data.outputBuffer(_channel) + data.framesN(), _yData.rbegin());
-    std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
-                _yData.rend());
+  }
+
+  const auto interval{_updateInterval.load()};
+  if (++_intervalCounter >= interval) {
+    _intervalCounter.exchange(0);
   }
 }
 
 void WaveformScopeWidget::adjustDataSize() {
   _dataSize.exchange(streamSetup().bufferFrames() * ui.memorySpin());
   _xData.resize(_dataSize);
-  _xData.shrink_to_fit();
   _yData.resize(_dataSize);
-  _yData.shrink_to_fit();
   std::iota(_xData.begin(), _xData.end(), 0);
 }

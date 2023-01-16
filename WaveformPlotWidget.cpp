@@ -14,6 +14,7 @@ void WaveformPlotWidget::paint() {
   scopeB.paint();
   scopeC.paint();
 
+  ui.updateIntervalEdit.paint();
   ui.xAxisLabel.paint();
   ui.invertXCheck.paint();
   ui.maxWidthBtn.paint();
@@ -25,6 +26,12 @@ void WaveformPlotWidget::paint() {
   ui.halfWidthBtn.paint();
   ui.quartWidthBtn.paint();
   ui.eighthWidthBtn.paint();
+
+  if (ui.updateIntervalEdit.handle()) {
+    scopeA.setUpdateInterval(ui.updateIntervalEdit());
+    scopeB.setUpdateInterval(ui.updateIntervalEdit());
+    scopeC.setUpdateInterval(ui.updateIntervalEdit());
+  }
 
   const float xRange{[&]() {
     if (_scopeA->enabled() && _scopeB->enabled()) {

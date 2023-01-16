@@ -23,8 +23,9 @@ public:
     ui.channelEdit.paint();
     ImGui::PopItemWidth();
     ui.enabledFlag.paint();
-    ui.gateEdit.paint();
+    ui.gateIntervalEdit.paint();
     ui.gateEnabledFlag.paint();
+    ui.gateFrameEdit.paint();
     ui.amplitudeEdit.paint();
 
     // Handle
@@ -40,9 +41,12 @@ public:
     if (ui.gateEnabledFlag.handle()) {
       generator->setGateEnabled(ui.gateEnabledFlag());
     }
-    if (ui.gateEdit.handle()) {
-      generator->setGateOpenFrame(ui.gateEdit(0));
-      generator->setGateFrameCount(ui.gateEdit(1));
+    if (ui.gateIntervalEdit.handle()) {
+      generator->setGateInterval(ui.gateIntervalEdit());
+    }
+    if (ui.gateFrameEdit.handle()) {
+      generator->setGateOpenFrame(ui.gateFrameEdit(0));
+      generator->setGateFrameCount(ui.gateFrameEdit(1));
     }
     if (ui.amplitudeEdit.handle()) {
       generator->setAmplitudePercent(ui.amplitudeEdit());
@@ -57,8 +61,9 @@ protected:
     ui.enabledFlag.trigger();
     ui.toInputSwitch.trigger();
     ui.channelEdit.trigger();
+    ui.gateIntervalEdit.trigger();
     ui.gateEnabledFlag.trigger();
-    ui.gateEdit.trigger();
+    ui.gateFrameEdit.trigger();
     ui.amplitudeEdit.trigger();
   }
 
@@ -75,8 +80,9 @@ protected:
     Imw::CheckBox enabledFlag{"Enabled"};
     InOutSwitch toInputSwitch{};
     Imw::SpinBox<int> channelEdit{"##"};
-    Imw::MultiSpinBox<int> gateEdit{2};
-    Imw::CheckBox gateEnabledFlag{"Gate Frame Open/Count"};
+    Imw::SpinBox<int> gateIntervalEdit{"##"};
+    Imw::CheckBox gateEnabledFlag{"Gate Interval"};
+    Imw::MultiSpinBox<int> gateFrameEdit{2, "Gate Frame Open/Count"};
     Imw::Slider<float> amplitudeEdit{"Amplitude %"};
 
     Ui() {
@@ -84,6 +90,9 @@ protected:
       channelEdit.setValueLimits({0, 100});
       channelEdit.setSameLineSpacing(ImGuiStyle().ItemInnerSpacing.x);
       enabledFlag.setSameLine(true);
+      gateIntervalEdit.setValueLimits({0, 1000000});
+      gateFrameEdit.setValueLimits({0, 100000}, 0);
+      gateFrameEdit.setValueLimits({0, 100000}, 1);
       amplitudeEdit.setValueLimits({1e-3f, 1e2f});
       amplitudeEdit.setValue(1.0f);
       amplitudeEdit.setTextFormat("%.2f");

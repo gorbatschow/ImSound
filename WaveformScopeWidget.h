@@ -14,12 +14,17 @@ public:
   void paint();
   void plot();
 
+  inline void setUpdateInterval(int interval) {
+    _updateInterval.exchange(interval);
+    _intervalCounter.exchange(0);
+  }
+
   inline const std::string &label() const { return ui.enabledCheck.label(); }
   inline const ImVec4 &color() const { return _color; }
 
   inline bool enabled() const { return _enabled.load(); }
-  inline bool isInput() const { return !_isOutput.load(); }
-  inline bool isOutput() const { return _isOutput.load(); }
+  inline bool isInput() const { return _isInput.load(); }
+  inline bool isOutput() const { return !(_isInput.load()); }
   inline int channel() const { return _channel.load(); }
   inline int memory() const { return _memory.load(); }
 
@@ -36,8 +41,8 @@ protected:
   virtual void streamDataReady(const RtSoundData &data) override;
 
 private:
-  inline static const int PlotMaxPts{1024};
-  inline static const int StemMaxPts{128};
+  inline static constexpr int PlotMaxPts{1024};
+  inline static constexpr int StemMaxPts{128};
   const ImVec4 _color{};
 
   std::vector<float> _xData, _yData;
@@ -45,9 +50,11 @@ private:
 
   std::atomic_int _dataSize{};
   std::atomic_bool _enabled{};
-  std::atomic_bool _isOutput{};
+  std::atomic_bool _isInput{};
   std::atomic_int _channel{};
   std::atomic_int _memory{};
+  std::atomic_int _updateInterval{};
+  std::atomic_int _intervalCounter{};
 
   void adjustDataSize();
 
@@ -66,7 +73,7 @@ private:
       sourceCombo.setWidth(100.f);
       sourceCombo.setSameLine(true);
       sourceCombo.setSameLineSpacing(25.0f);
-      sourceCombo.setValueList({{false, "Input"}, {true, "Output"}});
+      sourceCombo.setValueList({{false, "Output"}, {true, "Input"}});
 
       channelSpin.setLabel("Channel " + name);
       channelSpin.setWidth(100.f);

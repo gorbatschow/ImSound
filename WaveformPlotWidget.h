@@ -31,6 +31,7 @@ private:
   WaveformAxisX _axisX;
 
   struct Ui {
+    Imw::SpinBox<int> updateIntervalEdit{"Update Interval"};
     Imw::Label xAxisLabel{"X AXIS"};
     Imw::CheckBox invertXCheck{"Invert"};
     Imw::Button maxWidthBtn{"Max"};
@@ -44,6 +45,10 @@ private:
     Imw::Button eighthWidthBtn{"1/8"};
 
     Ui() {
+      updateIntervalEdit.setWidth(100.0f);
+      updateIntervalEdit.setValueLimits({0, 1000000});
+      xAxisLabel.setSameLine(true);
+      xAxisLabel.setSameLineSpacing(ImGuiStyle().ItemSpacing.x * 5);
       invertXCheck.setSameLine(true);
       maxWidthBtn.setSameLine(true);
       fitWidthBtn.setSameLine(true);
