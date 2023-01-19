@@ -63,7 +63,7 @@ private:
     Imw::ComboBox<bool> sourceCombo;
     Imw::SpinBox<int> channelSpin;
     Imw::SpinBox<int> memorySpin;
-    Imw::Slider<int> rangeSlider;
+    Imw::Slider<float> rangeSlider;
 
     Ui(const std::string &name) {
       enabledCheck.setLabel("Scope " + name);
@@ -92,6 +92,7 @@ private:
       rangeSlider.setWidth(-70.0f);
       rangeSlider.setSameLineSpacing(25.0f);
       rangeSlider.setValueLimits({1, 100});
+      rangeSlider.setTextFormat("%.1f");
     }
   };
   Ui ui;
