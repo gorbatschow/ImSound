@@ -14,6 +14,7 @@ void SoundClientInfoWidget::paint() {
   if (ui.resetHold.handle()) {
     std::for_each(_clientTime.begin(), _clientTime.end(),
                   [](ClientTime &info) { info.time = 0; });
+    ui.tPrcLabel.setValue(0);
   }
 
   static const int tableCols{4};
