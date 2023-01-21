@@ -91,6 +91,8 @@ private:
 // -----------------------------------------------------------------------------
 class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
                          public RtSoundClient {
+  using Base = Imw::ComboBox<RtAudio::DeviceInfo>;
+
 public:
   enum DeviceType { AllDevices, InputDevices, OutputDevices };
 
@@ -112,6 +114,11 @@ public:
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
+  }
+
+  virtual void loadStateFromFile() override {
+    Base::loadStateFromFile();
+    _enabledFlag.loadStateFromFile();
   }
 
   bool deviceEnabled() const { return _enabledFlag.value(); }

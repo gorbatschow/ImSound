@@ -17,6 +17,20 @@ WaveformScopeWidget::WaveformScopeWidget(const std::string &name,
   _memory.exchange(ui.memorySpin());
 }
 
+void WaveformScopeWidget::loadWidgetState() {
+  ui.enabledCheck.loadStateFromFile();
+  ui.sourceCombo.loadStateFromFile();
+  ui.channelSpin.loadStateFromFile();
+  ui.memorySpin.loadStateFromFile();
+  ui.rangeSlider.loadStateFromFile();
+
+  ui.enabledCheck.trigger();
+  ui.sourceCombo.trigger();
+  ui.channelSpin.trigger();
+  ui.memorySpin.trigger();
+  ui.rangeSlider.trigger();
+}
+
 void WaveformScopeWidget::paint() {
   // Paint
   ImGui::PushStyleColor(ImGuiCol_CheckMark, _color);

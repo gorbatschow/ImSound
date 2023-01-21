@@ -20,6 +20,15 @@ void SoundControlWidget::loadWidgetState() {
   soundIO->startSoundEngine(ui.audioApiCombo());
   ui.inputDeviceCombo->loadStateFromFile();
   ui.outputDeviceCombo->loadStateFromFile();
+
+  ui.inputChannelsSpin.loadStateFromFile();
+  ui.outputChannelsSpin.loadStateFromFile();
+  ui.realtimeCheck.loadStateFromFile();
+  ui.minLatencyCheck.loadStateFromFile();
+  ui.exclusiveCheck.loadStateFromFile();
+  ui.numBuffersSpin.loadStateFromFile();
+  ui.sampleRateCombo.loadStateFromFile();
+  ui.bufferFramesInput.loadStateFromFile();
 }
 
 void SoundControlWidget::paint() {

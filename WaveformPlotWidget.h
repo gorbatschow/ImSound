@@ -8,13 +8,21 @@
 
 class WaveformPlotWidget : public RtSoundClient {
 public:
+  // Constructor
   WaveformPlotWidget();
+
+  // Destructor
   ~WaveformPlotWidget() = default;
 
+  // Sound Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
   }
 
+  // Load Widget State
+  void loadWidgetState();
+
+  // Paint
   void paint();
 
   inline std::weak_ptr<WaveformScopeWidget> scopeA() { return _scopeA; }
@@ -22,6 +30,19 @@ public:
   inline std::weak_ptr<WaveformScopeWidget> scopeC() { return _scopeC; }
 
 private:
+  inline float get_xRange() const {
+    if (_scopeA->enabled() && _scopeB->enabled()) {
+      return std::max(_scopeA->rangeX(), _scopeB->rangeX());
+    } else if (_scopeA->enabled() && !_scopeB->enabled()) {
+      return _scopeA->rangeX();
+    } else if (!_scopeA->enabled() && _scopeB->enabled()) {
+      return _scopeB->rangeX();
+    }
+    return _scopeA->rangeX();
+  }
+
+  inline float get_xBufferRange() const { return float(_scopeA->rangeXB()); }
+
   std::shared_ptr<WaveformScopeWidget> _scopeA{
       new WaveformScopeWidget("A", {1.0, 1.0, 0.0, 1.0})};
   std::shared_ptr<WaveformScopeWidget> _scopeB{

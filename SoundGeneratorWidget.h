@@ -5,17 +5,40 @@
 
 template <class T> class SoundGeneratorWidget : public RtSoundClient {
 public:
+  // Constructor
   SoundGeneratorWidget(std::weak_ptr<T> generator_) : _generator(generator_) {
     const auto generator{_generator.lock()};
     assert(generator);
   }
 
+  // Destructor
   virtual ~SoundGeneratorWidget() = default;
 
+  // Sound Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
   }
 
+  // Load State
+  virtual void loadWidgetState() {
+    ui.toInputSwitch.loadStateFromFile();
+    ui.channelEdit.loadStateFromFile();
+    ui.enabledFlag.loadStateFromFile();
+    ui.gateIntervalEdit.loadStateFromFile();
+    ui.gateEnabledFlag.loadStateFromFile();
+    ui.gateFrameEdit.loadStateFromFile();
+    ui.amplitudeEdit.loadStateFromFile();
+
+    ui.enabledFlag.trigger();
+    ui.toInputSwitch.trigger();
+    ui.channelEdit.trigger();
+    ui.gateIntervalEdit.trigger();
+    ui.gateEnabledFlag.trigger();
+    ui.gateFrameEdit.trigger();
+    ui.amplitudeEdit.trigger();
+  }
+
+  // Paint
   virtual void paint() {
     const auto generator{_generator.lock()};
     assert(generator != nullptr);

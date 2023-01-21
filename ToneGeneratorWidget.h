@@ -17,6 +17,17 @@ public:
     return typeid(this);
   }
 
+  virtual void loadWidgetState() override {
+    SoundGeneratorWidget<RtSoundToneGen>::loadWidgetState();
+
+    ui.frequencyModeRadio.loadStateFromFile();
+    ui.frequencyIndexSpin.loadStateFromFile();
+    ui.frequencyHertzSpin.loadStateFromFile();
+    ui.frequencyNormalSlider.loadStateFromFile();
+
+    ui.frequencyModeRadio.trigger();
+  }
+
   // Paint
   virtual void paint() override;
 
@@ -33,7 +44,7 @@ private:
     Imw::Slider<float> frequencyNormalSlider{"Frequency Normal"};
 
     Ui() {
-      frequencyIndexSpin.setValueLimits({1, 262144});
+      frequencyIndexSpin.setValueLimits({1, 100000});
 
       frequencyHertzSpin.setValueLimits({1e-3f, 192e3f});
       frequencyHertzSpin.setValueStep(100.0f);

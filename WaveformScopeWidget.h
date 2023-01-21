@@ -15,7 +15,13 @@ public:
     return typeid(this);
   }
 
+  // Load Widget State
+  void loadWidgetState();
+
+  // Paint
   void paint();
+
+  // Plot
   void plot();
 
   inline void setUpdateInterval(int interval) {

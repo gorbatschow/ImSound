@@ -5,6 +5,20 @@
 
 WaveformPlotWidget::WaveformPlotWidget() {}
 
+void WaveformPlotWidget::loadWidgetState() {
+  _scopeA->loadWidgetState();
+  _scopeB->loadWidgetState();
+  _scopeC->loadWidgetState();
+
+  _axisX = {{}, get_xRange(), get_xBufferRange()};
+
+  ui.updateIntervalEdit.loadStateFromFile();
+  ui.invertXCheck.loadStateFromFile();
+
+  ui.updateIntervalEdit.trigger();
+  ui.maxWidthBtn.trigger();
+}
+
 void WaveformPlotWidget::paint() {
   auto &scopeA{*_scopeA.get()};
   auto &scopeB{*_scopeB.get()};
@@ -33,17 +47,8 @@ void WaveformPlotWidget::paint() {
     scopeC.setUpdateInterval(ui.updateIntervalEdit());
   }
 
-  const float xRange{[&]() {
-    if (_scopeA->enabled() && _scopeB->enabled()) {
-      return std::max(scopeA.rangeX(), scopeB.rangeX());
-    } else if (_scopeA->enabled() && !_scopeB->enabled()) {
-      return float(scopeA.rangeX());
-    } else if (!_scopeA->enabled() && _scopeB->enabled()) {
-      return float(scopeB.rangeX());
-    }
-    return float(scopeA.rangeX());
-  }()};
-  const float xbRange{float(scopeA.rangeXB())};
+  const float xRange{get_xRange()};
+  const float xbRange{get_xBufferRange()};
 
   const auto flags_plt{ImPlotFlags_NoTitle | ImPlotFlags_NoLegend |
                        ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect};
