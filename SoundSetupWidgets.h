@@ -94,6 +94,7 @@ class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
 public:
   enum DeviceType { AllDevices, InputDevices, OutputDevices };
 
+  // Constructor
   SoundDeviceCombo(DeviceType t = AllDevices, bool displayAll = true)
       : _deviceType(t), _displayAll(displayAll) {
     if (t == AllDevices) {
@@ -105,6 +106,10 @@ public:
     }
   }
 
+  // Destructor
+  virtual ~SoundDeviceCombo() = default;
+
+  // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
   }
@@ -125,6 +130,7 @@ private:
 
   void
   updateSoundDevices(const std::vector<RtAudio::DeviceInfo> &devices) override {
+    const std::string currName{isCurrentValid() ? currentValue().name() : ""};
     _currIndex = -1;
     _valueList.clear();
     _valueList.reserve(devices.size());
@@ -140,7 +146,11 @@ private:
       }
     }
     _valueList.shrink_to_fit();
+
     if (!_valueList.empty()) {
+      setCurrentName(currName);
+    }
+    if (!_valueList.empty() && _currIndex < 0) {
       _currIndex = 0;
     }
   }
