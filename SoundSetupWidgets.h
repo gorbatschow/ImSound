@@ -102,6 +102,11 @@ public:
       _enabledFlag.setLabel("Output Device");
     }
   }
+
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
   bool deviceEnabled() const { return _enabledFlag.value(); }
 
 protected:
