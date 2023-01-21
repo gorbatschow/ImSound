@@ -9,13 +9,22 @@
 
 class SoundControlWidget : public RtSoundClient {
 public:
+  // Constructor
   SoundControlWidget(std::weak_ptr<RtSoundIO> soundIO_);
 
-  void paint();
+  // Destructor
+  virtual ~SoundControlWidget() override = default;
 
+  // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
   }
+
+  // Load State
+  void loadWidgetState();
+
+  // Paint
+  void paint();
 
 private:
   std::weak_ptr<RtSoundIO> _soundIO;

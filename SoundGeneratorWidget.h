@@ -12,6 +12,10 @@ public:
 
   virtual ~SoundGeneratorWidget() = default;
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
   virtual void paint() {
     const auto generator{_generator.lock()};
     assert(generator != nullptr);

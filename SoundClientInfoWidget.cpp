@@ -4,7 +4,7 @@
 
 void SoundClientInfoWidget::paint() {
   const auto &provider{streamProvider()};
-  std::lock_guard(provider.mutex);
+  std::lock_guard(provider.providerMutex);
 
   ui.holdTimeCheck.paint();
   ui.resetHold.paint();
@@ -46,7 +46,7 @@ void SoundClientInfoWidget::applyStreamConfig(const RtSoundSetup &setup) {
 
 void SoundClientInfoWidget::streamDataReady(const RtSoundData &data) {
   const auto &provider{streamProvider()};
-  std::lock_guard(provider.mutex);
+  std::lock_guard(provider.providerMutex);
 
   ui.tBufLabel.setValue(data.framesT());
   ui.tPrcLabel.setValue(updateClientsTable());

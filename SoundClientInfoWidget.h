@@ -10,11 +10,12 @@ public:
   SoundClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
   ~SoundClientInfoWidget() = default;
 
-  void paint();
-
-  const std::type_info &clientTypeId() const override final {
+  // Client Type Id
+  virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
   }
+
+  void paint();
 
 private:
   struct ClientTime {

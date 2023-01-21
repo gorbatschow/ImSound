@@ -11,15 +11,15 @@ public:
   WaveformPlotWidget();
   ~WaveformPlotWidget() = default;
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
   void paint();
 
   inline std::weak_ptr<WaveformScopeWidget> scopeA() { return _scopeA; }
   inline std::weak_ptr<WaveformScopeWidget> scopeB() { return _scopeB; }
   inline std::weak_ptr<WaveformScopeWidget> scopeC() { return _scopeC; }
-
-  virtual const std::type_info &clientTypeId() const override {
-    return typeid(this);
-  }
 
 private:
   std::shared_ptr<WaveformScopeWidget> _scopeA{

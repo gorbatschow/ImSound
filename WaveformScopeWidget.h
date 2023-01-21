@@ -11,6 +11,10 @@ public:
                       const ImVec4 &color = {0.0, 0.0, 1.0, 1.0});
   ~WaveformScopeWidget() = default;
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
   void paint();
   void plot();
 
@@ -31,10 +35,6 @@ public:
   inline float rangeY() const { return 1.0f / float(ui.rangeSlider.value()); };
   inline float rangeX() const { return float(_dataSize.load()); }
   inline float rangeXB() const { return float(streamSetup().bufferFrames()); }
-
-  virtual const std::type_info &clientTypeId() const override {
-    return typeid(this);
-  }
 
 protected:
   virtual void applyStreamConfig(const RtSoundSetup &setup) override;

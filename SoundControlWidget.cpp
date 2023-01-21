@@ -5,15 +5,26 @@
 
 SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSoundIO> soundIO_)
     : _soundIO(soundIO_) {
-  const auto soundIO{_soundIO.lock().get()};
-  assert(soundIO != nullptr);
+  const auto soundIO{_soundIO.lock()};
+  assert(soundIO);
+
   soundIO->streamProvider().addClient(ui.inputDeviceCombo);
   soundIO->streamProvider().addClient(ui.outputDeviceCombo);
 }
 
+void SoundControlWidget::loadWidgetState() {
+  const auto soundIO{_soundIO.lock()};
+  assert(soundIO);
+
+  ui.audioApiCombo.loadStateFromFile();
+  soundIO->startSoundEngine(ui.audioApiCombo());
+  ui.inputDeviceCombo->loadStateFromFile();
+  ui.outputDeviceCombo->loadStateFromFile();
+}
+
 void SoundControlWidget::paint() {
-  const auto soundIO{_soundIO.lock().get()};
-  assert(soundIO != nullptr);
+  const auto soundIO{_soundIO.lock()};
+  assert(soundIO);
 
   // Paint
   ui.audioApiCombo.paint();

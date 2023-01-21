@@ -13,6 +13,10 @@ public:
   // Destructor
   virtual ~ToneGeneratorWidget() override = default;
 
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
+
   // Paint
   virtual void paint() override;
 

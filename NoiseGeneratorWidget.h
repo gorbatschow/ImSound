@@ -8,4 +8,9 @@ public:
       : SoundGeneratorWidget<RtSoundNoiseGen>(generator_) {}
 
   ~NoiseGeneratorWidget() override = default;
+
+  // Client Type Id
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
 };
