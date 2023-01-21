@@ -46,7 +46,7 @@ private:
 
     Ui() {
       updateIntervalEdit.setWidth(100.0f);
-      updateIntervalEdit.setValueLimits({0, 1000000});
+      updateIntervalEdit.setValueLimits({1, 100});
       xAxisLabel.setSameLine(true);
       xAxisLabel.setSameLineSpacing(ImGuiStyle().ItemSpacing.x * 5);
       invertXCheck.setSameLine(true);

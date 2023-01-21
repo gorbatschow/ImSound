@@ -94,7 +94,7 @@ protected:
       channelEdit.setValueLimits({0, 100});
       channelEdit.setSameLineSpacing(ImGuiStyle().ItemInnerSpacing.x);
       enabledFlag.setSameLine(true);
-      gateIntervalEdit.setValueLimits({0, 1000000});
+      gateIntervalEdit.setValueLimits({1, 100});
       gateFrameEdit.setValueLimits({0, 100000}, 0);
       gateFrameEdit.setValueLimits({0, 100000}, 1);
       amplitudeEdit.setValueLimits({1e-3f, 1e2f});
