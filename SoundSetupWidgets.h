@@ -54,8 +54,10 @@ public:
     ImGui::Text("%d", _value);
   }
 
+  // Set Value
   virtual void setValue(const int &value, int) override {
     _powerOfTwo = int(std::log2(double(value)));
+    _value = (int(1)) << _powerOfTwo;
   }
 
 private:
