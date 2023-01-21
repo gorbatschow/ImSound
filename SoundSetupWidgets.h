@@ -125,6 +125,7 @@ private:
 
   void
   updateSoundDevices(const std::vector<RtAudio::DeviceInfo> &devices) override {
+    _currIndex = -1;
     _valueList.clear();
     _valueList.reserve(devices.size());
     for (auto &device : devices) {
@@ -139,6 +140,9 @@ private:
       }
     }
     _valueList.shrink_to_fit();
+    if (!_valueList.empty()) {
+      _currIndex = 0;
+    }
   }
 };
 

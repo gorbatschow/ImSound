@@ -47,6 +47,9 @@ void SoundControlWidget::paint() {
   ui.streamStatusLine.paint();
 
   // Handle
+  if (ui.audioApiCombo.handle()) {
+    soundIO->startSoundEngine(ui.audioApiCombo());
+  }
   if (ui.restartEngineBtn.handle()) {
     soundIO->startSoundEngine(ui.audioApiCombo());
   }
@@ -66,12 +69,16 @@ void SoundControlWidget::paint() {
 
 void SoundControlWidget::configureStream(RtSoundSetup &setup) {
   setup.setInputEnabled(ui.inputDeviceCombo->deviceEnabled());
-  setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);
+  if ((*ui.inputDeviceCombo).isCurrentValid()) {
+    setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);
+  }
   setup.setInputChannels(ui.inputChannelsSpin(0));
   setup.setInputFirstChannel(ui.inputChannelsSpin(1));
 
   setup.setOutputEnabled(ui.outputDeviceCombo->deviceEnabled());
-  setup.setOutputDeviceId((*ui.outputDeviceCombo)().ID);
+  if ((*ui.inputDeviceCombo).isCurrentValid()) {
+    setup.setOutputDeviceId((*ui.outputDeviceCombo)().ID);
+  }
   setup.setOutputChannels(ui.inputChannelsSpin(0));
   setup.setOutputFirstChannel(ui.outputChannelsSpin(1));
 
