@@ -1,5 +1,5 @@
 #include "WaveformScopeWidget.h"
-#include "DownsampleLTTB.h"
+#include "lttb.h"
 #include <algorithm>
 #include <implot.h>
 #include <mutex>
@@ -84,8 +84,8 @@ void WaveformScopeWidget::plot() {
     const auto intervalCounter{_intervalCounter.load()};
     if (intervalCounter == 0) {
       if (npts > PlotMaxPts) {
-        DownsampleLTTB(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0],
-                       &_yDataPlt[0], PlotMaxPts);
+        lttb(&_xData[xmin], &_yData[xmin], npts, &_xDataPlt[0], &_yDataPlt[0],
+             PlotMaxPts);
       } else {
         std::copy(&_xData[xmin], &_xData[xmin] + npts, &_xDataPlt[0]);
         std::copy(&_yData[xmin], &_yData[xmin] + npts, &_yDataPlt[0]);
