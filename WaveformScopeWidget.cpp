@@ -125,9 +125,15 @@ void WaveformScopeWidget::streamDataReady(const RtSoundData &data) {
 
     const auto buffer{isInput ? data.inputBuffer(channel)
                               : data.outputBuffer(channel)};
-    std::copy(buffer, buffer + data.framesN(), _yData.rbegin());
-    std::rotate(_yData.rbegin(), _yData.rbegin() + data.framesN(),
-                _yData.rend());
+
+    // std::shift_left(_yData.begin(), _yData.end(), data.framesN());
+    // std::copy(buffer, buffer + data.framesN(), _yData.end() -
+    // data.framesN());
+
+    memmove(_yData.data(), _yData.data() + data.framesN(),
+            (_yData.size() - data.framesN()) * sizeof(float));
+    memcpy(_yData.data() + _yData.size() - data.framesN(), buffer,
+           data.framesN() * sizeof(float));
 
     const auto interval{_updateInterval.load()};
     if (++_intervalCounter >= interval) {
