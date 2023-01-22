@@ -2,6 +2,10 @@
 #include <RtSoundProvider.h>
 #include <imgui.h>
 
+void SoundClientInfoWidget::loadWidgetState() {
+  ui.holdTimeCheck.loadStateFromFile();
+}
+
 void SoundClientInfoWidget::paint() {
   const auto &provider{streamProvider()};
   std::lock_guard(provider.providerMutex);

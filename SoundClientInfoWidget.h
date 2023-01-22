@@ -7,7 +7,10 @@
 
 class SoundClientInfoWidget : public RtSoundClient {
 public:
+  // Constructor
   SoundClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
+
+  // Destructor
   ~SoundClientInfoWidget() = default;
 
   // Client Type Id
@@ -15,6 +18,10 @@ public:
     return typeid(this);
   }
 
+  // Load State
+  void loadWidgetState();
+
+  // Paint
   void paint();
 
 private:
