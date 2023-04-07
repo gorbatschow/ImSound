@@ -1,4 +1,4 @@
-#include "WaveformScopeWidget.h"
+#include "ImSoundWaveformScopeWidget.h"
 #include "lttb.h"
 #include <algorithm>
 #include <implot.h>

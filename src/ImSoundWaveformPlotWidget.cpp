@@ -1,4 +1,4 @@
-#include "WaveformPlotWidget.h"
+#include "ImSoundWaveformPlotWidget.h"
 #include <implot.h>
 #include <mutex>
 #include <numeric>

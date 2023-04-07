@@ -1,6 +1,6 @@
 #pragma once
-#include "WaveformAxis.h"
-#include "WaveformScopeWidget.h"
+#include "ImSoundWaveformAxis.h"
+#include "ImSoundWaveformScopeWidget.h"
 #include <RtSoundClient.h>
 #include <atomic>
 #include <imw.h>

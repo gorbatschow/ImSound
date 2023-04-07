@@ -1,13 +1,13 @@
 #pragma once
-#include "SoundGeneratorWidget.h"
+#include "ImSoundGeneratorWidget.h"
 #include <RtSoundNoiseGen.h>
 
 namespace ImSound {
-class NoiseGeneratorWidget : public SoundGeneratorWidget<RtSound::NoiseGen>
+class NoiseGeneratorWidget : public GeneratorWidget<RtSound::NoiseGen>
 {
 public:
   NoiseGeneratorWidget(std::weak_ptr<RtSound::NoiseGen> generator_)
-      : SoundGeneratorWidget<RtSound::NoiseGen>(generator_) {}
+      : GeneratorWidget<RtSound::NoiseGen>(generator_) {}
 
   ~NoiseGeneratorWidget() override = default;
 

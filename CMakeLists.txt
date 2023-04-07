@@ -6,12 +6,12 @@ set(CXX_CMAKE_STANDARD 20)
 set(CXX_CMAKE_STANDARD_REQUIRED ON)
 
 set(IMSOUNDWIDGETS_SOURCES
-    src/SoundControlWidget.cpp
-    src/SoundSetupDisplayWidget.cpp
-    src/SoundClientInfoWidget.cpp
-    src/WaveformScopeWidget.cpp
-    src/WaveformPlotWidget.cpp
-    src/ToneGeneratorWidget.cpp
+    src/ImSoundControlWidget.cpp
+    src/ImSoundSetupDisplayWidget.cpp
+    src/ImSoundClientInfoWidget.cpp
+    src/ImSoundWaveformScopeWidget.cpp
+    src/ImSoundWaveformPlotWidget.cpp
+    src/ImSoundToneGeneratorWidget.cpp
 )
 
 add_library(${PROJECT_NAME} ${IMSOUNDWIDGETS_SOURCES})

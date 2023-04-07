@@ -1,10 +1,10 @@
-#include "SoundControlWidget.h"
+#include "ImSoundControlWidget.h"
 #include <cmath>
 #include <imgui.h>
 #include <memory>
 
 namespace ImSound {
-SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
+ControlWidget::ControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
     : _soundIO(soundIO_) {
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
@@ -13,7 +13,7 @@ SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
   soundIO->streamProvider().addClient(ui.outputDeviceCombo);
 }
 
-void SoundControlWidget::loadWidgetState() {
+void ControlWidget::loadWidgetState() {
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
 
@@ -32,7 +32,7 @@ void SoundControlWidget::loadWidgetState() {
   ui.bufferFramesInput.loadStateFromFile();
 }
 
-void SoundControlWidget::paint() {
+void ControlWidget::paint() {
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
 
@@ -77,7 +77,7 @@ void SoundControlWidget::paint() {
   }
 }
 
-void SoundControlWidget::configureStream(RtSound::StreamSetup &setup) {
+void ControlWidget::configureStream(RtSound::StreamSetup &setup) {
   setup.setInputEnabled(ui.inputDeviceCombo->deviceEnabled());
   if ((*ui.inputDeviceCombo).isCurrentValid()) {
     setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);

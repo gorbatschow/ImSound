@@ -1,5 +1,5 @@
 #pragma once
-#include "SoundSetupWidgets.h"
+#include "ImSoundSetupWidgets.h"
 #include <RtSoundClient.h>
 #include <RtSoundIO.h>
 #include <imw.h>
@@ -8,14 +8,14 @@
 #include <vector>
 
 namespace ImSound {
-class SoundControlWidget : public RtSound::Client
+class ControlWidget : public RtSound::Client
 {
 public:
   // Constructor
-  SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_);
+  ControlWidget(std::weak_ptr<RtSound::IO> soundIO_);
 
   // Destructor
-  virtual ~SoundControlWidget() override = default;
+  virtual ~ControlWidget() override = default;
 
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {

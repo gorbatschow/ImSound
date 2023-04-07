@@ -1,4 +1,4 @@
-#include "ToneGeneratorWidget.h"
+#include "ImSoundToneGeneratorWidget.h"
 
 namespace ImSound {
 void ToneGeneratorWidget::paint() {
@@ -6,7 +6,7 @@ void ToneGeneratorWidget::paint() {
   assert(generator != nullptr);
 
   // Paint
-  SoundGeneratorWidget::paint();
+  GeneratorWidget::paint();
   ui.frequencyModeRadio.paint();
   if (ui.frequencyModeRadio() == 0) {
     ui.frequencyIndexSpin.paint();
@@ -49,7 +49,7 @@ void ToneGeneratorWidget::paint() {
 }
 
 void ToneGeneratorWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
-  SoundGeneratorWidget<RtSound::ToneGen>::applyStreamConfig(setup);
+  GeneratorWidget<RtSound::ToneGen>::applyStreamConfig(setup);
 
   auto generator{_generator.lock()};
   assert(generator);

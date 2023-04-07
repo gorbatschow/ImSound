@@ -6,14 +6,14 @@
 #include <typeindex>
 
 namespace ImSound {
-class SoundClientInfoWidget : public RtSound::Client
+class ClientInfoWidget : public RtSound::Client
 {
 public:
   // Constructor
-  SoundClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
+  ClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
 
   // Destructor
-  ~SoundClientInfoWidget() = default;
+  ~ClientInfoWidget() = default;
 
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {

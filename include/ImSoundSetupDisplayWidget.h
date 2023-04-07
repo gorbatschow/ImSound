@@ -2,11 +2,11 @@
 #include <RtSoundClient.h>
 
 namespace ImSound {
-class SoundSetupDisplayWidget : public RtSound::Client
+class SetupDisplayWidget : public RtSound::Client
 {
 public:
-  SoundSetupDisplayWidget() = default;
-  ~SoundSetupDisplayWidget() = default;
+  SetupDisplayWidget() = default;
+  ~SetupDisplayWidget() = default;
 
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);

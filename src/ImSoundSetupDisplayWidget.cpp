@@ -1,8 +1,8 @@
-#include "SoundSetupDisplayWidget.h"
+#include "ImSoundSetupDisplayWidget.h"
 #include <imgui.h>
 
 namespace ImSound {
-void SoundSetupDisplayWidget::paint() {
+void SetupDisplayWidget::paint() {
   if (ImGui::BeginTable("Setup Table", 2)) {
     appendRow("API", _setup.soundApiName());
     appendRow("Sample Rate", std::to_string(_setup.sampleRate()));
@@ -43,14 +43,12 @@ void SoundSetupDisplayWidget::paint() {
     ImGui::EndTable();
   }
 }
-void SoundSetupDisplayWidget::applyStreamConfig(
-    const RtSound::StreamSetup &setup) {
+void SetupDisplayWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
   _setup = setup;
 }
 
-void SoundSetupDisplayWidget::appendRow(const std::string &param,
-                                        const std::string &value) {
-
+void SetupDisplayWidget::appendRow(const std::string &param,
+                                   const std::string &value) {
   ImGui::TableNextRow();
   ImGui::TableNextColumn();
   ImGui::Text("%s", param.c_str());

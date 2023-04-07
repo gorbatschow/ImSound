@@ -1,13 +1,13 @@
-#include "SoundClientInfoWidget.h"
+#include "ImSoundClientInfoWidget.h"
 #include <RtSoundProvider.h>
 #include <imgui.h>
 
 namespace ImSound {
-void SoundClientInfoWidget::loadWidgetState() {
+void ClientInfoWidget::loadWidgetState() {
   ui.holdTimeCheck.loadStateFromFile();
 }
 
-void SoundClientInfoWidget::paint() {
+void ClientInfoWidget::paint() {
   const auto &provider{streamProvider()};
   std::lock_guard(provider.providerMutex);
 
@@ -38,7 +38,7 @@ void SoundClientInfoWidget::paint() {
   }
 }
 
-void SoundClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
+void ClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
   ui.tBufLabel.setValue(0);
   ui.tPrcLabel.setValue(0);
 
@@ -50,7 +50,7 @@ void SoundClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup)
   }
 }
 
-void SoundClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
+void ClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
   const auto &provider{streamProvider()};
   std::lock_guard(provider.providerMutex);
 
@@ -58,7 +58,7 @@ void SoundClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
   ui.tPrcLabel.setValue(updateClientsTable());
 }
 
-long SoundClientInfoWidget::updateClientsTable() {
+long ClientInfoWidget::updateClientsTable() {
   const auto &provider{streamProvider()};
   long totalTime{0};
   for (auto &ct : _clientTime) {
@@ -77,7 +77,7 @@ long SoundClientInfoWidget::updateClientsTable() {
   return totalTime;
 }
 
-void SoundClientInfoWidget::paintRow(const ClientTime &ct) {
+void ClientInfoWidget::paintRow(const ClientTime &ct) {
   const auto client{ct.client.lock()};
   if (!client) {
     assert(false);

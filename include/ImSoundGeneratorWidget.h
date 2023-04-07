@@ -5,17 +5,18 @@
 
 namespace ImSound {
 template<class T>
-class SoundGeneratorWidget : public RtSound::Client
+class GeneratorWidget : public RtSound::Client
 {
 public:
   // Constructor
-  SoundGeneratorWidget(std::weak_ptr<T> generator_) : _generator(generator_) {
+  GeneratorWidget(std::weak_ptr<T> generator_)
+      : _generator(generator_) {
     const auto generator{_generator.lock()};
     assert(generator);
   }
 
   // Destructor
-  virtual ~SoundGeneratorWidget() = default;
+  virtual ~GeneratorWidget() = default;
 
   // Sound Client Type Id
   virtual const std::type_info &clientTypeId() const override {
