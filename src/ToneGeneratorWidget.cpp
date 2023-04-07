@@ -1,5 +1,6 @@
 #include "ToneGeneratorWidget.h"
 
+namespace ImSound {
 void ToneGeneratorWidget::paint() {
   const auto generator{_generator.lock()};
   assert(generator != nullptr);
@@ -55,3 +56,4 @@ void ToneGeneratorWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
 
   ui.frequencyModeRadio.trigger();
 }
+} // namespace ImSound

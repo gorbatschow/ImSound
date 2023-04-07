@@ -5,6 +5,7 @@
 #include <mutex>
 #include <numeric>
 
+namespace ImSound {
 WaveformScopeWidget::WaveformScopeWidget(const std::string &name,
                                          const ImVec4 &color)
     : ui(name), _color(color) {
@@ -148,3 +149,4 @@ void WaveformScopeWidget::adjustDataSize() {
   _yData.resize(_dataSize);
   std::iota(_xData.begin(), _xData.end(), 0);
 }
+} // namespace ImSound

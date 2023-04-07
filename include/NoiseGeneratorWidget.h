@@ -2,10 +2,12 @@
 #include "SoundGeneratorWidget.h"
 #include <RtSoundNoiseGen.h>
 
-class NoiseGeneratorWidget : public SoundGeneratorWidget<RtSoundNoiseGen> {
+namespace ImSound {
+class NoiseGeneratorWidget : public SoundGeneratorWidget<RtSound::NoiseGen>
+{
 public:
-  NoiseGeneratorWidget(std::weak_ptr<RtSoundNoiseGen> generator_)
-      : SoundGeneratorWidget<RtSoundNoiseGen>(generator_) {}
+  NoiseGeneratorWidget(std::weak_ptr<RtSound::NoiseGen> generator_)
+      : SoundGeneratorWidget<RtSound::NoiseGen>(generator_) {}
 
   ~NoiseGeneratorWidget() override = default;
 
@@ -14,3 +16,4 @@ public:
     return typeid(this);
   }
 };
+} // namespace ImSound

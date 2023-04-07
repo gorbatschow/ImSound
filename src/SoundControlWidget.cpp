@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <memory>
 
+namespace ImSound {
 SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
     : _soundIO(soundIO_) {
   const auto soundIO{_soundIO.lock()};
@@ -106,3 +107,4 @@ void SoundControlWidget::configureStream(RtSound::StreamSetup &setup) {
     setup.addStreamFlags(RTAUDIO_HOG_DEVICE);
   }
 }
+} // namespace ImSound

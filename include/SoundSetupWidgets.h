@@ -6,6 +6,7 @@
 #include <math.h>
 #include <memory.h>
 
+namespace ImSound {
 // AudioApiCombo
 // -----------------------------------------------------------------------------
 class AudioApiCombo : public Imw::ComboBox<RtAudio::Api> {
@@ -184,3 +185,4 @@ public:
 private:
   double _df{0.0f};
 };
+} // namespace ImSound

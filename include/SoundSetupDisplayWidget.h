@@ -1,6 +1,7 @@
 #pragma once
 #include <RtSoundClient.h>
 
+namespace ImSound {
 class SoundSetupDisplayWidget : public RtSound::Client
 {
 public:
@@ -21,3 +22,4 @@ private:
 
   void appendRow(const std::string &param = {}, const std::string &value = {});
 };
+} // namespace ImSound

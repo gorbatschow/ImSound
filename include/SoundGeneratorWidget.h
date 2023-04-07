@@ -3,6 +3,7 @@
 #include <imgui_internal.h>
 #include <imw.h>
 
+namespace ImSound {
 template<class T>
 class SoundGeneratorWidget : public RtSound::Client
 {
@@ -130,3 +131,4 @@ protected:
   };
   Ui ui;
 };
+} // namespace ImSound

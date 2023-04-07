@@ -4,6 +4,7 @@
 #include <RtSoundToneGen.h>
 #include <memory>
 
+namespace ImSound {
 class ToneGeneratorWidget : public SoundGeneratorWidget<RtSound::ToneGen>
 {
 public:
@@ -58,3 +59,4 @@ private:
   };
   Ui ui;
 };
+} // namespace ImSound

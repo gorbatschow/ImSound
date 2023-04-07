@@ -3,6 +3,7 @@
 #include <mutex>
 #include <numeric>
 
+namespace ImSound {
 WaveformPlotWidget::WaveformPlotWidget() {}
 
 void WaveformPlotWidget::loadWidgetState() {
@@ -208,3 +209,4 @@ void WaveformPlotWidget::paint() {
     ImPlot::EndPlot();
   }
 }
+} // namespace ImSound

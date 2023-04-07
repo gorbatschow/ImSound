@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+namespace ImSound {
 class SoundControlWidget : public RtSound::Client
 {
 public:
@@ -78,3 +79,4 @@ public:
 
   virtual void configureStream(RtSound::StreamSetup &) override;
 };
+} // namespace ImSound

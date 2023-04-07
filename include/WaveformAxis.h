@@ -2,6 +2,7 @@
 #include <implot.h>
 #include <vector>
 
+namespace ImSound {
 class WaveformAxisX {
 public:
   WaveformAxisX() = default;
@@ -63,3 +64,4 @@ private:
   float _dataRange{};
   float _bufferRange{};
 };
+} // namespace ImSound

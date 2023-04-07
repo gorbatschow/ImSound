@@ -5,6 +5,7 @@
 #include <imw.h>
 #include <string>
 
+namespace ImSound {
 class WaveformScopeWidget : public RtSound::Client
 {
 public:
@@ -104,3 +105,4 @@ private:
   };
   Ui ui;
 };
+} // namespace ImSound

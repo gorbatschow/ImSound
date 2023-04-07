@@ -5,6 +5,7 @@
 #include <imw.h>
 #include <typeindex>
 
+namespace ImSound {
 class SoundClientInfoWidget : public RtSound::Client
 {
 public:
@@ -52,3 +53,4 @@ private:
   };
   Ui ui;
 };
+} // namespace ImSound

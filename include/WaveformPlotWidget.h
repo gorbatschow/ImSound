@@ -6,6 +6,7 @@
 #include <imw.h>
 #include <vector>
 
+namespace ImSound {
 class WaveformPlotWidget : public RtSound::Client
 {
 public:
@@ -85,3 +86,4 @@ private:
   };
   Ui ui;
 };
+} // namespace ImSound

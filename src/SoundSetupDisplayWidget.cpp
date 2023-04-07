@@ -1,6 +1,7 @@
 #include "SoundSetupDisplayWidget.h"
 #include <imgui.h>
 
+namespace ImSound {
 void SoundSetupDisplayWidget::paint() {
   if (ImGui::BeginTable("Setup Table", 2)) {
     appendRow("API", _setup.soundApiName());
@@ -56,3 +57,4 @@ void SoundSetupDisplayWidget::appendRow(const std::string &param,
   ImGui::TableNextColumn();
   ImGui::Text("%s", value.c_str());
 }
+} // namespace ImSound

@@ -2,6 +2,7 @@
 #include <RtSoundProvider.h>
 #include <imgui.h>
 
+namespace ImSound {
 void SoundClientInfoWidget::loadWidgetState() {
   ui.holdTimeCheck.loadStateFromFile();
 }
@@ -97,3 +98,4 @@ void SoundClientInfoWidget::paintRow(const ClientTime &ct) {
   ImGui::TableNextColumn();
   ImGui::Text("%ld", ct.time);
 }
+} // namespace ImSound
