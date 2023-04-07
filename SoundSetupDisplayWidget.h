@@ -1,7 +1,8 @@
 #pragma once
 #include <RtSoundClient.h>
 
-class SoundSetupDisplayWidget : public RtSoundClient {
+class SoundSetupDisplayWidget : public RtSound::Client
+{
 public:
   SoundSetupDisplayWidget() = default;
   ~SoundSetupDisplayWidget() = default;
@@ -13,10 +14,10 @@ public:
   void paint();
 
 protected:
-  virtual void applyStreamConfig(const RtSoundSetup &setup) override;
+  virtual void applyStreamConfig(const RtSound::StreamSetup &setup) override;
 
 private:
-  RtSoundSetup _setup;
+  RtSound::StreamSetup _setup;
 
   void appendRow(const std::string &param = {}, const std::string &value = {});
 };

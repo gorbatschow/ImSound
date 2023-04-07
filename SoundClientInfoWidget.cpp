@@ -37,7 +37,7 @@ void SoundClientInfoWidget::paint() {
   }
 }
 
-void SoundClientInfoWidget::applyStreamConfig(const RtSoundSetup &setup) {
+void SoundClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
   ui.tBufLabel.setValue(0);
   ui.tPrcLabel.setValue(0);
 
@@ -49,7 +49,7 @@ void SoundClientInfoWidget::applyStreamConfig(const RtSoundSetup &setup) {
   }
 }
 
-void SoundClientInfoWidget::streamDataReady(const RtSoundData &data) {
+void SoundClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
   const auto &provider{streamProvider()};
   std::lock_guard(provider.providerMutex);
 

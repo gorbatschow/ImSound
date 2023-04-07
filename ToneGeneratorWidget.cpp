@@ -47,8 +47,8 @@ void ToneGeneratorWidget::paint() {
   }
 }
 
-void ToneGeneratorWidget::applyStreamConfig(const RtSoundSetup &setup) {
-  SoundGeneratorWidget<RtSoundToneGen>::applyStreamConfig(setup);
+void ToneGeneratorWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
+  SoundGeneratorWidget<RtSound::ToneGen>::applyStreamConfig(setup);
 
   auto generator{_generator.lock()};
   assert(generator);

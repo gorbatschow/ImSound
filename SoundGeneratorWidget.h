@@ -3,7 +3,9 @@
 #include <imgui_internal.h>
 #include <imw.h>
 
-template <class T> class SoundGeneratorWidget : public RtSoundClient {
+template<class T>
+class SoundGeneratorWidget : public RtSound::Client
+{
 public:
   // Constructor
   SoundGeneratorWidget(std::weak_ptr<T> generator_) : _generator(generator_) {
@@ -81,7 +83,7 @@ public:
   }
 
 protected:
-  void applyStreamConfig(const RtSoundSetup &setup) override {
+  void applyStreamConfig(const RtSound::StreamSetup &setup) override {
     const auto generator{_generator.lock()};
     assert(generator != nullptr);
 

@@ -5,7 +5,8 @@
 #include <imw.h>
 #include <string>
 
-class WaveformScopeWidget : public RtSoundClient {
+class WaveformScopeWidget : public RtSound::Client
+{
 public:
   WaveformScopeWidget(const std::string &name,
                       const ImVec4 &color = {0.0, 0.0, 1.0, 1.0});
@@ -43,8 +44,8 @@ public:
   inline float rangeXB() const { return float(streamSetup().bufferFrames()); }
 
 protected:
-  virtual void applyStreamConfig(const RtSoundSetup &setup) override;
-  virtual void streamDataReady(const RtSoundData &data) override;
+  virtual void applyStreamConfig(const RtSound::StreamSetup &setup) override;
+  virtual void streamDataReady(const RtSound::StreamData &data) override;
 
 private:
   inline static constexpr int PlotMaxPts{1024};

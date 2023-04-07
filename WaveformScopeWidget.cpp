@@ -104,11 +104,11 @@ void WaveformScopeWidget::plot() {
   }
 }
 
-void WaveformScopeWidget::applyStreamConfig(const RtSoundSetup &setup) {
+void WaveformScopeWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
   adjustDataSize();
 }
 
-void WaveformScopeWidget::streamDataReady(const RtSoundData &data) {
+void WaveformScopeWidget::streamDataReady(const RtSound::StreamData &data) {
   if (!_enabled) {
     return;
   }

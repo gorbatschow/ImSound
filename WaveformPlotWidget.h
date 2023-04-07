@@ -6,7 +6,8 @@
 #include <imw.h>
 #include <vector>
 
-class WaveformPlotWidget : public RtSoundClient {
+class WaveformPlotWidget : public RtSound::Client
+{
 public:
   // Constructor
   WaveformPlotWidget();

@@ -69,7 +69,8 @@ private:
 class StreamStatusLine : public Imw::BasicElement {
 
 public:
-  StreamStatusLine(std::weak_ptr<RtSoundIO> io) : _io{io} {}
+  StreamStatusLine(std::weak_ptr<RtSound::IO> io)
+      : _io{io} {}
 
 protected:
   void paintElement() override {
@@ -84,13 +85,14 @@ protected:
   }
 
 private:
-  std::weak_ptr<RtSoundIO> _io;
+  std::weak_ptr<RtSound::IO> _io;
 };
 
 // AudioDeviceCombo
 // -----------------------------------------------------------------------------
 class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
-                         public RtSoundClient {
+                         public RtSound::Client
+{
   using Base = Imw::ComboBox<RtAudio::DeviceInfo>;
 
 public:

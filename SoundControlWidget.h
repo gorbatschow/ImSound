@@ -7,10 +7,11 @@
 #include <string>
 #include <vector>
 
-class SoundControlWidget : public RtSoundClient {
+class SoundControlWidget : public RtSound::Client
+{
 public:
   // Constructor
-  SoundControlWidget(std::weak_ptr<RtSoundIO> soundIO_);
+  SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_);
 
   // Destructor
   virtual ~SoundControlWidget() override = default;
@@ -27,11 +28,12 @@ public:
   void paint();
 
 private:
-  std::weak_ptr<RtSoundIO> _soundIO;
+  std::weak_ptr<RtSound::IO> _soundIO;
 
 public:
   struct Ui {
-    Ui(std::weak_ptr<RtSoundIO> soundIO) : streamStatusLine{soundIO} {
+    Ui(std::weak_ptr<RtSound::IO> soundIO)
+        : streamStatusLine{soundIO} {
       inputChannelsSpin.setValueLimits({1, 100}, 0);
       inputChannelsSpin.setValueLimits({0, 100}, 1);
       outputChannelsSpin.setValueLimits({1, 100}, 0);
@@ -74,5 +76,5 @@ public:
   };
   Ui ui{_soundIO};
 
-  virtual void configureStream(RtSoundSetup &) override;
+  virtual void configureStream(RtSound::StreamSetup &) override;
 };

@@ -5,7 +5,8 @@
 #include <imw.h>
 #include <typeindex>
 
-class SoundClientInfoWidget : public RtSoundClient {
+class SoundClientInfoWidget : public RtSound::Client
+{
 public:
   // Constructor
   SoundClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
@@ -26,13 +27,13 @@ public:
 
 private:
   struct ClientTime {
-    std::weak_ptr<RtSoundClient> client;
+    std::weak_ptr<RtSound::Client> client;
     long time{};
   };
   std::vector<ClientTime> _clientTime;
 
-  void applyStreamConfig(const RtSoundSetup &setup) override;
-  void streamDataReady(const RtSoundData &data) override;
+  void applyStreamConfig(const RtSound::StreamSetup &setup) override;
+  void streamDataReady(const RtSound::StreamData &data) override;
   long updateClientsTable();
   void paintRow(const ClientTime &client);
 

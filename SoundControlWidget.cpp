@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include <memory>
 
-SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSoundIO> soundIO_)
+SoundControlWidget::SoundControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
     : _soundIO(soundIO_) {
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
@@ -76,7 +76,7 @@ void SoundControlWidget::paint() {
   }
 }
 
-void SoundControlWidget::configureStream(RtSoundSetup &setup) {
+void SoundControlWidget::configureStream(RtSound::StreamSetup &setup) {
   setup.setInputEnabled(ui.inputDeviceCombo->deviceEnabled());
   if ((*ui.inputDeviceCombo).isCurrentValid()) {
     setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);

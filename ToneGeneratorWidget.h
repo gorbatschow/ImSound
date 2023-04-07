@@ -1,14 +1,15 @@
 #pragma once
-#include "RtSoundSetup.h"
+#include "RtSoundStreamSetup.h"
 #include "SoundGeneratorWidget.h"
 #include <RtSoundToneGen.h>
 #include <memory>
 
-class ToneGeneratorWidget : public SoundGeneratorWidget<RtSoundToneGen> {
+class ToneGeneratorWidget : public SoundGeneratorWidget<RtSound::ToneGen>
+{
 public:
   // Constructor
-  ToneGeneratorWidget(std::weak_ptr<RtSoundToneGen> generator_)
-      : SoundGeneratorWidget<RtSoundToneGen>(generator_) {}
+  ToneGeneratorWidget(std::weak_ptr<RtSound::ToneGen> generator_)
+      : SoundGeneratorWidget<RtSound::ToneGen>(generator_) {}
 
   // Destructor
   virtual ~ToneGeneratorWidget() override = default;
@@ -18,7 +19,7 @@ public:
   }
 
   virtual void loadWidgetState() override {
-    SoundGeneratorWidget<RtSoundToneGen>::loadWidgetState();
+    SoundGeneratorWidget<RtSound::ToneGen>::loadWidgetState();
 
     ui.frequencyModeRadio.loadStateFromFile();
     ui.frequencyIndexSpin.loadStateFromFile();
@@ -32,7 +33,7 @@ public:
   virtual void paint() override;
 
 protected:
-  void applyStreamConfig(const RtSoundSetup &setup) override;
+  void applyStreamConfig(const RtSound::StreamSetup &setup) override;
 
 private:
   struct Ui {

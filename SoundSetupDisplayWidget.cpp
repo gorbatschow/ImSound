@@ -42,7 +42,8 @@ void SoundSetupDisplayWidget::paint() {
     ImGui::EndTable();
   }
 }
-void SoundSetupDisplayWidget::applyStreamConfig(const RtSoundSetup &setup) {
+void SoundSetupDisplayWidget::applyStreamConfig(
+    const RtSound::StreamSetup &setup) {
   _setup = setup;
 }
 
