@@ -9,7 +9,8 @@
 namespace ImSound {
 // AudioApiCombo
 // -----------------------------------------------------------------------------
-class AudioApiCombo : public Imw::ComboBox<RtAudio::Api> {
+class AudioApiCombo : public ImWrap::ComboBox<RtAudio::Api>
+{
 public:
   AudioApiCombo() {
     _label = "Audio API";
@@ -18,8 +19,11 @@ public:
     _valueList.resize(rtAPIs.size());
     std::transform(
         rtAPIs.begin(), rtAPIs.end(), _valueList.begin(), [](RtAudio::Api api) {
-          return Imw::NamedValue{api, RtAudio::getApiDisplayName(api)};
+          return ImWrap::NamedValue{api, RtAudio::getApiDisplayName(api)};
         });
+    if (_valueList.size() > 0) {
+      //_currIndex = 0;
+    }
   }
 
 protected:
@@ -27,18 +31,25 @@ protected:
 
 // SampleRateCombo
 // -----------------------------------------------------------------------------
-class SampleRateCombo : public Imw::ComboBox<int> {
+class SampleRateCombo : public ImWrap::ComboBox<int>
+{
 public:
   SampleRateCombo() {
     _label = "Sample Rate (Hz)";
-    _valueList = {{192000, "192k"}, {96000, "96k"}, {48000, "48k"},
-                  {44100, "44.1k"}, {24000, "24k"}, {12000, "12k"}};
+    _valueList = {{192000, "192k"},
+                  {96000, "96k"},
+                  {48000, "48k"},
+                  {44100, "44.1k"},
+                  {24000, "24k"},
+                  {12000, "12k"}};
+    _currIndex = 0;
   }
 };
 
 // BufferSizeInput
 // -----------------------------------------------------------------------------
-class BufferSizeInput : public Imw::ValueElement<int> {
+class BufferSizeInput : public ImWrap::ValueElement<int>
+{
 public:
   BufferSizeInput() {
     _label = "Buffer Size";
@@ -67,8 +78,8 @@ private:
 
 // StreamStatusLine
 // -----------------------------------------------------------------------------
-class StreamStatusLine : public Imw::BasicElement {
-
+class StreamStatusLine : public ImWrap::BasicElement
+{
 public:
   StreamStatusLine(std::weak_ptr<RtSound::IO> io)
       : _io{io} {}
@@ -91,10 +102,10 @@ private:
 
 // AudioDeviceCombo
 // -----------------------------------------------------------------------------
-class SoundDeviceCombo : public Imw::ComboBox<RtAudio::DeviceInfo>,
+class SoundDeviceCombo : public ImWrap::ComboBox<RtAudio::DeviceInfo>,
                          public RtSound::Client
 {
-  using Base = Imw::ComboBox<RtAudio::DeviceInfo>;
+  using Base = ImWrap::ComboBox<RtAudio::DeviceInfo>;
 
 public:
   enum DeviceType { AllDevices, InputDevices, OutputDevices };
@@ -103,12 +114,13 @@ public:
   SoundDeviceCombo(DeviceType t = AllDevices, bool displayAll = true)
       : _deviceType(t), _displayAll(displayAll) {
     if (t == AllDevices) {
-      _enabledFlag.setLabel("Audio Device");
+      setLabel("Audio Device");
     } else if (t == InputDevices) {
-      _enabledFlag.setLabel("Input Device");
+      setLabel("Input Device");
     } else if (t == OutputDevices) {
-      _enabledFlag.setLabel("Output Device");
+      setLabel("Output Device");
     }
+    _enabledFlag.setLabel("Enabled");
   }
 
   // Destructor
@@ -128,14 +140,14 @@ public:
 
 protected:
   void paintElement() override {
-    Imw::ComboBox<RtAudio::DeviceInfo>::paintElement();
+    ImWrap::ComboBox<RtAudio::DeviceInfo>::paintElement();
     ImGui::SameLine();
     _enabledFlag.paint();
   }
 
 private:
   const DeviceType _deviceType{AllDevices};
-  Imw::CheckBox _enabledFlag;
+  ImWrap::CheckBox _enabledFlag;
   bool _displayAll{};
 
   void
@@ -168,7 +180,8 @@ private:
 
 // FrequencySpinBox
 // -----------------------------------------------------------------------------
-class FrequencySpinBox : public Imw::SpinBox<int> {
+class FrequencySpinBox : public ImWrap::SpinBox<int>
+{
 public:
   FrequencySpinBox() {}
 

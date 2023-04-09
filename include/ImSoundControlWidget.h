@@ -28,17 +28,14 @@ public:
   // Paint
   void paint();
 
-private:
-  std::weak_ptr<RtSound::IO> _soundIO;
-
-public:
-  struct Ui {
+  struct Ui
+  {
     Ui(std::weak_ptr<RtSound::IO> soundIO)
         : streamStatusLine{soundIO} {
-      inputChannelsSpin.setValueLimits({1, 100}, 0);
-      inputChannelsSpin.setValueLimits({0, 100}, 1);
-      outputChannelsSpin.setValueLimits({1, 100}, 0);
-      outputChannelsSpin.setValueLimits({0, 100}, 1);
+      inputChannelsSpin.setValueLimits({1, 64}, 0);
+      inputChannelsSpin.setValueLimits({0, 64}, 1);
+      outputChannelsSpin.setValueLimits({1, 64}, 0);
+      outputChannelsSpin.setValueLimits({0, 64}, 1);
 
       restartEngineBtn.setSameLine(true);
       stopStreamBtn.setSameLine(true);
@@ -52,17 +49,18 @@ public:
       numBuffersSpin.setValueLimits({1, 9});
     }
 
-    Imw::Button restartEngineBtn{"Restart"};
-    Imw::Button setupStreamBtn{"Setup"};
-    Imw::Button startStreamBtn{"Start"};
-    Imw::Button stopStreamBtn{"Stop"};
-    Imw::Button shotStreamBtn{"Shot"};
-    Imw::MultiSpinBox<int> inputChannelsSpin{2, "Num. Inputs / First Input"};
-    Imw::MultiSpinBox<int> outputChannelsSpin{2, "Num. Outputs / First Output"};
-    Imw::CheckBox realtimeCheck{"Realtime"};
-    Imw::CheckBox minLatencyCheck{"Min. Latency"};
-    Imw::CheckBox exclusiveCheck{"Exclusive"};
-    Imw::SpinBox<int> numBuffersSpin{"Num. Buffers"};
+    ImWrap::Button restartEngineBtn{"Restart"};
+    ImWrap::Button setupStreamBtn{"Setup"};
+    ImWrap::Button startStreamBtn{"Start"};
+    ImWrap::Button stopStreamBtn{"Stop"};
+    ImWrap::Button shotStreamBtn{"Shot"};
+    ImWrap::MultiSpinBox<int> inputChannelsSpin{2, "Num. Inputs / First Input"};
+    ImWrap::MultiSpinBox<int> outputChannelsSpin{2,
+                                                 "Num. Outputs / First Output"};
+    ImWrap::CheckBox realtimeCheck{"Realtime"};
+    ImWrap::CheckBox minLatencyCheck{"Min. Latency"};
+    ImWrap::CheckBox exclusiveCheck{"Exclusive"};
+    ImWrap::SpinBox<int> numBuffersSpin{"Num. Buffers"};
 
     AudioApiCombo audioApiCombo;
     SampleRateCombo sampleRateCombo;
@@ -75,8 +73,15 @@ public:
 
     StreamStatusLine streamStatusLine;
   };
-  Ui ui{_soundIO};
 
+  inline Ui &ui() { return _ui; }
+  inline const Ui &ui() const { return _ui; }
+
+private:
   virtual void configureStream(RtSound::StreamSetup &) override;
+
+private:
+  std::weak_ptr<RtSound::IO> _soundIO;
+  Ui _ui{_soundIO};
 };
 } // namespace ImSound

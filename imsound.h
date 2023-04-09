@@ -1,0 +1,11 @@
+#pragma once
+#include <ImSoundClientInfoWidget.h>
+#include <ImSoundControlWidget.h>
+#include <ImSoundGeneratorWidget.h>
+#include <ImSoundNoiseGeneratorWidget.h>
+#include <ImSoundSetupDisplayWidget.h>
+#include <ImSoundSetupWidgets.h>
+#include <ImSoundToneGeneratorWidget.h>
+#include <ImSoundWaveformAxis.h>
+#include <ImSoundWaveformPlotWidget.h>
+#include <ImSoundWaveformScopeWidget.h>

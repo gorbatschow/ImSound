@@ -1,6 +1,5 @@
 #include "ImSoundControlWidget.h"
 #include <cmath>
-#include <imgui.h>
 #include <memory>
 
 namespace ImSound {
@@ -9,27 +8,27 @@ ControlWidget::ControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
 
-  soundIO->streamProvider().addClient(ui.inputDeviceCombo);
-  soundIO->streamProvider().addClient(ui.outputDeviceCombo);
+  soundIO->streamProvider().addClient(_ui.inputDeviceCombo);
+  soundIO->streamProvider().addClient(_ui.outputDeviceCombo);
 }
 
 void ControlWidget::loadWidgetState() {
   const auto soundIO{_soundIO.lock()};
   assert(soundIO);
 
-  ui.audioApiCombo.loadStateFromFile();
-  soundIO->startSoundEngine(ui.audioApiCombo());
-  ui.inputDeviceCombo->loadStateFromFile();
-  ui.outputDeviceCombo->loadStateFromFile();
+  _ui.audioApiCombo.loadStateFromFile();
+  soundIO->startSoundEngine(_ui.audioApiCombo());
+  _ui.inputDeviceCombo->loadStateFromFile();
+  _ui.outputDeviceCombo->loadStateFromFile();
 
-  ui.inputChannelsSpin.loadStateFromFile();
-  ui.outputChannelsSpin.loadStateFromFile();
-  ui.realtimeCheck.loadStateFromFile();
-  ui.minLatencyCheck.loadStateFromFile();
-  ui.exclusiveCheck.loadStateFromFile();
-  ui.numBuffersSpin.loadStateFromFile();
-  ui.sampleRateCombo.loadStateFromFile();
-  ui.bufferFramesInput.loadStateFromFile();
+  _ui.inputChannelsSpin.loadStateFromFile();
+  _ui.outputChannelsSpin.loadStateFromFile();
+  _ui.realtimeCheck.loadStateFromFile();
+  _ui.minLatencyCheck.loadStateFromFile();
+  _ui.exclusiveCheck.loadStateFromFile();
+  _ui.numBuffersSpin.loadStateFromFile();
+  _ui.sampleRateCombo.loadStateFromFile();
+  _ui.bufferFramesInput.loadStateFromFile();
 }
 
 void ControlWidget::paint() {
@@ -37,73 +36,79 @@ void ControlWidget::paint() {
   assert(soundIO);
 
   // Paint
-  ui.audioApiCombo.paint();
-  ui.restartEngineBtn.paint();
-  ui.inputDeviceCombo->paint();
-  ui.inputChannelsSpin.paint();
-  ui.outputDeviceCombo->paint();
-  ui.outputChannelsSpin.paint();
-  ui.sampleRateCombo.paint();
-  ui.bufferFramesInput.paint();
-  ui.numBuffersSpin.paint();
-  ui.realtimeCheck.paint();
-  ui.minLatencyCheck.paint();
-  ui.exclusiveCheck.paint();
+  _ui.audioApiCombo.paint();
+  _ui.restartEngineBtn.paint();
+
+  _ui.inputDeviceCombo->paint();
+  _ui.inputChannelsSpin.paint();
+
+  _ui.outputDeviceCombo->paint();
+  _ui.outputChannelsSpin.paint();
+
+  _ui.sampleRateCombo.paint();
+
+  _ui.bufferFramesInput.paint();
+  _ui.numBuffersSpin.paint();
+  _ui.realtimeCheck.paint();
+  _ui.minLatencyCheck.paint();
+  _ui.exclusiveCheck.paint();
+
   ImGui::Separator();
-  ui.setupStreamBtn.paint();
-  ui.shotStreamBtn.paint();
-  ui.stopStreamBtn.paint();
-  ui.startStreamBtn.paint();
-  ui.streamStatusLine.paint();
+
+  _ui.setupStreamBtn.paint();
+  _ui.shotStreamBtn.paint();
+  _ui.stopStreamBtn.paint();
+  _ui.startStreamBtn.paint();
+  _ui.streamStatusLine.paint();
 
   // Handle
-  if (ui.audioApiCombo.handle()) {
-    soundIO->startSoundEngine(ui.audioApiCombo());
+  if (_ui.audioApiCombo.handle()) {
+    soundIO->startSoundEngine(_ui.audioApiCombo());
   }
-  if (ui.restartEngineBtn.handle()) {
-    soundIO->startSoundEngine(ui.audioApiCombo());
+  if (_ui.restartEngineBtn.handle()) {
+    soundIO->startSoundEngine(_ui.audioApiCombo());
   }
-  if (ui.setupStreamBtn.handle()) {
+  if (_ui.setupStreamBtn.handle()) {
     soundIO->setupSoundStream();
   }
-  if (ui.startStreamBtn.handle()) {
+  if (_ui.startStreamBtn.handle()) {
     soundIO->startSoundStream();
   }
-  if (ui.stopStreamBtn.handle()) {
+  if (_ui.stopStreamBtn.handle()) {
     soundIO->stopSoundStream();
   }
-  if (ui.shotStreamBtn.handle()) {
+  if (_ui.shotStreamBtn.handle()) {
     soundIO->startSoundStream(true);
   }
 }
 
 void ControlWidget::configureStream(RtSound::StreamSetup &setup) {
-  setup.setInputEnabled(ui.inputDeviceCombo->deviceEnabled());
-  if ((*ui.inputDeviceCombo).isCurrentValid()) {
-    setup.setInputDeviceId((*ui.inputDeviceCombo)().ID);
+  setup.setInputEnabled(_ui.inputDeviceCombo->deviceEnabled());
+  if ((*_ui.inputDeviceCombo).isCurrentValid()) {
+    setup.setInputDeviceId((*_ui.inputDeviceCombo)().ID);
   }
-  setup.setInputChannels(ui.inputChannelsSpin(0));
-  setup.setInputFirstChannel(ui.inputChannelsSpin(1));
+  setup.setInputChannels(_ui.inputChannelsSpin(0));
+  setup.setInputFirstChannel(_ui.inputChannelsSpin(1));
 
-  setup.setOutputEnabled(ui.outputDeviceCombo->deviceEnabled());
-  if ((*ui.inputDeviceCombo).isCurrentValid()) {
-    setup.setOutputDeviceId((*ui.outputDeviceCombo)().ID);
+  setup.setOutputEnabled(_ui.outputDeviceCombo->deviceEnabled());
+  if ((*_ui.inputDeviceCombo).isCurrentValid()) {
+    setup.setOutputDeviceId((*_ui.outputDeviceCombo)().ID);
   }
-  setup.setOutputChannels(ui.inputChannelsSpin(0));
-  setup.setOutputFirstChannel(ui.outputChannelsSpin(1));
+  setup.setOutputChannels(_ui.inputChannelsSpin(0));
+  setup.setOutputFirstChannel(_ui.outputChannelsSpin(1));
 
-  setup.setSampleRate(ui.sampleRateCombo());
-  setup.setBufferFrames(ui.bufferFramesInput());
-  setup.setBuffersNum(ui.numBuffersSpin());
+  setup.setSampleRate(_ui.sampleRateCombo());
+  setup.setBufferFrames(_ui.bufferFramesInput());
+  setup.setBuffersNum(_ui.numBuffersSpin());
 
   setup.clearStreamFlags();
-  if (ui.realtimeCheck()) {
+  if (_ui.realtimeCheck()) {
     setup.addStreamFlags(RTAUDIO_SCHEDULE_REALTIME);
   }
-  if (ui.minLatencyCheck()) {
+  if (_ui.minLatencyCheck()) {
     setup.addStreamFlags(RTAUDIO_MINIMIZE_LATENCY);
   }
-  if (ui.exclusiveCheck()) {
+  if (_ui.exclusiveCheck()) {
     setup.addStreamFlags(RTAUDIO_HOG_DEVICE);
   }
 }
