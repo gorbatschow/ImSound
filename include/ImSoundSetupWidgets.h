@@ -35,13 +35,13 @@ class SampleRateCombo : public ImWrap::ComboBox<int>
 {
 public:
   SampleRateCombo() {
-    _label = "Sample Rate (Hz)";
-    _valueList = {{192000, "192k"},
-                  {96000, "96k"},
-                  {48000, "48k"},
-                  {44100, "44.1k"},
-                  {24000, "24k"},
-                  {12000, "12k"}};
+    _label = "Sample Rate [kHz]";
+    _valueList = {{192000, "192"},
+                  {96000, "96"},
+                  {48000, "48"},
+                  {44100, "44.1"},
+                  {24000, "24"},
+                  {12000, "12"}};
     _currIndex = 0;
   }
 };
@@ -78,26 +78,24 @@ private:
 
 // StreamStatusLine
 // -----------------------------------------------------------------------------
-class StreamStatusLine : public ImWrap::BasicElement
+class StreamStatusLine : public ImWrap::BasicElement, public RtSound::Client
 {
 public:
-  StreamStatusLine(std::weak_ptr<RtSound::IO> io)
-      : _io{io} {}
+  StreamStatusLine() {}
+
+  // Client Type Id
+  virtual const std::type_info &clientTypeId() const override {
+    return typeid(this);
+  }
 
 protected:
   void paintElement() override {
-    const auto soundIO{_io.lock()};
-    assert(soundIO);
-
-    if (soundIO->streamInfo().streamRunning()) {
-      ImGui::Text("Trun=%.1fs", soundIO->streamInfo().streamTime());
+    if (streamInfo().streamRunning()) {
+      ImGui::Text("Trun=%.1fs", streamInfo().streamTime());
     } else {
       ImGui::Text("Stopped");
     }
   }
-
-private:
-  std::weak_ptr<RtSound::IO> _io;
 };
 
 // AudioDeviceCombo

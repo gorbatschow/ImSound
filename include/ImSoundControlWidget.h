@@ -10,9 +10,24 @@
 namespace ImSound {
 class ControlWidget : public RtSound::Client
 {
-public:
+  ControlWidget(const ControlWidget &w) = delete;
+  ControlWidget &operator=(ControlWidget const &) = delete;
+
   // Constructor
-  ControlWidget(std::weak_ptr<RtSound::IO> soundIO_);
+  ControlWidget(std::weak_ptr<RtSound::IO> io)
+      : _soundIO{io} {
+    io.lock()->streamProvider().addClient(_ui.inputDeviceCombo);
+    io.lock()->streamProvider().addClient(_ui.outputDeviceCombo);
+    io.lock()->streamProvider().addClient(_ui.streamStatusLine);
+  }
+
+public:
+  static inline std::shared_ptr<ControlWidget> Create(
+      std::weak_ptr<RtSound::IO> io) {
+    std::shared_ptr<ControlWidget> w{new ControlWidget(io)};
+    io.lock()->addClient(w);
+    return w;
+  }
 
   // Destructor
   virtual ~ControlWidget() override = default;
@@ -30,8 +45,7 @@ public:
 
   struct Ui
   {
-    Ui(std::weak_ptr<RtSound::IO> soundIO)
-        : streamStatusLine{soundIO} {
+    Ui() {
       inputChannelsSpin.setValueLimits({1, 64}, 0);
       inputChannelsSpin.setValueLimits({0, 64}, 1);
       outputChannelsSpin.setValueLimits({1, 64}, 0);
@@ -41,7 +55,7 @@ public:
       stopStreamBtn.setSameLine(true);
       shotStreamBtn.setSameLine(true);
       startStreamBtn.setSameLine(true);
-      streamStatusLine.setSameLine(true);
+      streamStatusLine->setSameLine(true);
       realtimeCheck.setSameLine(true);
       minLatencyCheck.setSameLine(true);
       exclusiveCheck.setSameLine(true);
@@ -70,8 +84,7 @@ public:
         new SoundDeviceCombo(SoundDeviceCombo::InputDevices)};
     std::shared_ptr<SoundDeviceCombo> outputDeviceCombo{
         new SoundDeviceCombo(SoundDeviceCombo::OutputDevices)};
-
-    StreamStatusLine streamStatusLine;
+    std::shared_ptr<StreamStatusLine> streamStatusLine{new StreamStatusLine()};
   };
 
   inline Ui &ui() { return _ui; }
@@ -82,6 +95,6 @@ private:
 
 private:
   std::weak_ptr<RtSound::IO> _soundIO;
-  Ui _ui{_soundIO};
+  Ui _ui;
 };
 } // namespace ImSound

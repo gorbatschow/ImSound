@@ -3,14 +3,6 @@
 #include <memory>
 
 namespace ImSound {
-ControlWidget::ControlWidget(std::weak_ptr<RtSound::IO> soundIO_)
-    : _soundIO(soundIO_) {
-  const auto soundIO{_soundIO.lock()};
-  assert(soundIO);
-
-  soundIO->streamProvider().addClient(_ui.inputDeviceCombo);
-  soundIO->streamProvider().addClient(_ui.outputDeviceCombo);
-}
 
 void ControlWidget::loadWidgetState() {
   const auto soundIO{_soundIO.lock()};
@@ -59,7 +51,7 @@ void ControlWidget::paint() {
   _ui.shotStreamBtn.paint();
   _ui.stopStreamBtn.paint();
   _ui.startStreamBtn.paint();
-  _ui.streamStatusLine.paint();
+  _ui.streamStatusLine->paint();
 
   // Handle
   if (_ui.audioApiCombo.handle()) {
