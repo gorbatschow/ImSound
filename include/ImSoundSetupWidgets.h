@@ -9,8 +9,7 @@
 namespace ImSound {
 // AudioApiCombo
 // -----------------------------------------------------------------------------
-class AudioApiCombo : public ImWrap::ComboBox<RtAudio::Api>
-{
+class AudioApiCombo : public ImWrap::ComboBox<RtAudio::Api> {
 public:
   AudioApiCombo() {
     _label = "Audio API";
@@ -31,25 +30,19 @@ protected:
 
 // SampleRateCombo
 // -----------------------------------------------------------------------------
-class SampleRateCombo : public ImWrap::ComboBox<int>
-{
+class SampleRateCombo : public ImWrap::ComboBox<int> {
 public:
   SampleRateCombo() {
     _label = "Sample Rate [kHz]";
-    _valueList = {{192000, "192"},
-                  {96000, "96"},
-                  {48000, "48"},
-                  {44100, "44.1"},
-                  {24000, "24"},
-                  {12000, "12"}};
+    _valueList = {{192000, "192"}, {96000, "96"}, {48000, "48"},
+                  {44100, "44.1"}, {24000, "24"}, {12000, "12"}};
     _currIndex = 0;
   }
 };
 
 // BufferSizeInput
 // -----------------------------------------------------------------------------
-class BufferSizeInput : public ImWrap::ValueElement<int>
-{
+class BufferSizeInput : public ImWrap::ValueElement<int> {
 public:
   BufferSizeInput() {
     _label = "Buffer Size";
@@ -78,8 +71,7 @@ private:
 
 // StreamStatusLine
 // -----------------------------------------------------------------------------
-class StreamStatusLine : public ImWrap::BasicElement, public RtSound::Client
-{
+class StreamStatusLine : public ImWrap::BasicElement, public RtSound::Client {
 public:
   StreamStatusLine() {}
 
@@ -100,9 +92,9 @@ protected:
 
 // AudioDeviceCombo
 // -----------------------------------------------------------------------------
+// TODO: class field ImWrap::ComboBox instead inheritance
 class SoundDeviceCombo : public ImWrap::ComboBox<RtAudio::DeviceInfo>,
-                         public RtSound::Client
-{
+                         public RtSound::Client {
   using Base = ImWrap::ComboBox<RtAudio::DeviceInfo>;
 
 public:
@@ -118,7 +110,7 @@ public:
     } else if (t == OutputDevices) {
       setLabel("Output Device");
     }
-    _enabledFlag.setLabel("Enabled");
+    _ui.deviceEnabled.setLabel("Enabled");
   }
 
   // Destructor
@@ -131,21 +123,30 @@ public:
 
   virtual void loadStateFromFile() override {
     Base::loadStateFromFile();
-    _enabledFlag.loadStateFromFile();
+    _ui.deviceEnabled.loadStateFromFile();
   }
 
-  bool deviceEnabled() const { return _enabledFlag.value(); }
+  inline bool deviceEnabled() const { return _ui.deviceEnabled.value(); }
+
+  struct Ui {
+    ImWrap::CheckBox deviceEnabled;
+  };
+  inline Ui &ui() { return _ui; }
+  inline const Ui &ui() const { return _ui; }
 
 protected:
   void paintElement() override {
     ImWrap::ComboBox<RtAudio::DeviceInfo>::paintElement();
-    ImGui::SameLine();
-    _enabledFlag.paint();
+    if (_ui.deviceEnabled.visible()) {
+      ImGui::SameLine();
+      _ui.deviceEnabled.paint();
+    }
   }
 
 private:
+  Ui _ui;
+
   const DeviceType _deviceType{AllDevices};
-  ImWrap::CheckBox _enabledFlag;
   bool _displayAll{};
 
   void
@@ -178,8 +179,7 @@ private:
 
 // FrequencySpinBox
 // -----------------------------------------------------------------------------
-class FrequencySpinBox : public ImWrap::SpinBox<int>
-{
+class FrequencySpinBox : public ImWrap::SpinBox<int> {
 public:
   FrequencySpinBox() {}
 
