@@ -8,24 +8,22 @@
 #include <vector>
 
 namespace ImSound {
-class ControlWidget : public RtSound::Client
-{
+class ControlWidget : public RtSound::Client {
   ControlWidget(const ControlWidget &w) = delete;
   ControlWidget &operator=(ControlWidget const &) = delete;
 
   // Constructor
-  ControlWidget(std::weak_ptr<RtSound::IO> io)
-      : _soundIO{io} {
-    io.lock()->streamProvider().addClient(_ui.inputDeviceCombo);
-    io.lock()->streamProvider().addClient(_ui.outputDeviceCombo);
-    io.lock()->streamProvider().addClient(_ui.streamStatusLine);
+  ControlWidget(std::shared_ptr<RtSound::IO> io) : _soundIO{io} {
+    io->streamProvider().addClient(_ui.inputDeviceCombo);
+    io->streamProvider().addClient(_ui.outputDeviceCombo);
+    io->streamProvider().addClient(_ui.streamStatusLine);
   }
 
 public:
-  static inline std::shared_ptr<ControlWidget> Create(
-      std::weak_ptr<RtSound::IO> io) {
+  static inline std::shared_ptr<ControlWidget>
+  Create(std::shared_ptr<RtSound::IO> io) {
     std::shared_ptr<ControlWidget> w{new ControlWidget(io)};
-    io.lock()->addClient(w);
+    io->addClient(w);
     return w;
   }
 
@@ -40,11 +38,13 @@ public:
   // Load State
   void loadWidgetState();
 
+  void loadState(const mINI::INIStructure &ini);
+  void saveState(mINI::INIStructure &ini) const;
+
   // Paint
   void paint();
 
-  struct Ui
-  {
+  struct Ui {
     Ui() {
       inputChannelsSpin.setValueLimits({1, 64}, 0);
       inputChannelsSpin.setValueLimits({0, 64}, 1);
@@ -81,10 +81,11 @@ public:
     BufferSizeInput bufferFramesInput;
 
     std::shared_ptr<SoundDeviceCombo> inputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::InputDevices)};
+        std::make_shared<SoundDeviceCombo>(SoundDeviceCombo::InputDevices)};
     std::shared_ptr<SoundDeviceCombo> outputDeviceCombo{
-        new SoundDeviceCombo(SoundDeviceCombo::OutputDevices)};
-    std::shared_ptr<StreamStatusLine> streamStatusLine{new StreamStatusLine()};
+        std::make_shared<SoundDeviceCombo>(SoundDeviceCombo::OutputDevices)};
+    std::shared_ptr<StreamStatusLine> streamStatusLine{
+        std::make_shared<StreamStatusLine>()};
   };
 
   inline Ui &ui() { return _ui; }
@@ -94,7 +95,7 @@ private:
   virtual void configureStream(RtSound::StreamSetup &) override;
 
 private:
-  std::weak_ptr<RtSound::IO> _soundIO;
+  std::shared_ptr<RtSound::IO> _soundIO;
   Ui _ui;
 };
 } // namespace ImSound

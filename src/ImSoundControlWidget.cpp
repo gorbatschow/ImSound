@@ -5,11 +5,8 @@
 namespace ImSound {
 
 void ControlWidget::loadWidgetState() {
-  const auto soundIO{_soundIO.lock()};
-  assert(soundIO);
-
   _ui.audioApiCombo.loadStateFromFile();
-  soundIO->startSoundEngine(_ui.audioApiCombo());
+  _soundIO->startSoundEngine(_ui.audioApiCombo());
   _ui.inputDeviceCombo->loadStateFromFile();
   _ui.outputDeviceCombo->loadStateFromFile();
 
@@ -23,10 +20,38 @@ void ControlWidget::loadWidgetState() {
   _ui.bufferFramesInput.loadStateFromFile();
 }
 
-void ControlWidget::paint() {
-  const auto soundIO{_soundIO.lock()};
-  assert(soundIO);
+void ControlWidget::loadState(const mINI::INIStructure &ini) {
+  _ui.audioApiCombo.loadState(ini);
+  _soundIO->startSoundEngine(_ui.audioApiCombo());
+  _ui.inputDeviceCombo->loadState(ini);
+  _ui.outputDeviceCombo->loadState(ini);
 
+  _ui.inputChannelsSpin.loadState(ini);
+  _ui.outputChannelsSpin.loadState(ini);
+  _ui.realtimeCheck.loadState(ini);
+  _ui.minLatencyCheck.loadState(ini);
+  _ui.exclusiveCheck.loadState(ini);
+  _ui.numBuffersSpin.loadState(ini);
+  _ui.sampleRateCombo.loadState(ini);
+  _ui.bufferFramesInput.loadState(ini);
+}
+
+void ControlWidget::saveState(mINI::INIStructure &ini) const {
+  _ui.audioApiCombo.saveState(ini);
+  _ui.inputDeviceCombo->saveState(ini);
+  _ui.outputDeviceCombo->saveState(ini);
+
+  _ui.inputChannelsSpin.saveState(ini);
+  _ui.outputChannelsSpin.saveState(ini);
+  _ui.realtimeCheck.saveState(ini);
+  _ui.minLatencyCheck.saveState(ini);
+  _ui.exclusiveCheck.saveState(ini);
+  _ui.numBuffersSpin.saveState(ini);
+  _ui.sampleRateCombo.saveState(ini);
+  _ui.bufferFramesInput.saveState(ini);
+}
+
+void ControlWidget::paint() {
   // Paint
   _ui.audioApiCombo.paint();
   _ui.restartEngineBtn.paint();
@@ -55,22 +80,22 @@ void ControlWidget::paint() {
 
   // Handle
   if (_ui.audioApiCombo.handle()) {
-    soundIO->startSoundEngine(_ui.audioApiCombo());
+    _soundIO->startSoundEngine(_ui.audioApiCombo());
   }
   if (_ui.restartEngineBtn.handle()) {
-    soundIO->startSoundEngine(_ui.audioApiCombo());
+    _soundIO->startSoundEngine(_ui.audioApiCombo());
   }
   if (_ui.setupStreamBtn.handle()) {
-    soundIO->setupSoundStream();
+    _soundIO->setupSoundStream();
   }
   if (_ui.startStreamBtn.handle()) {
-    soundIO->startSoundStream();
+    _soundIO->startSoundStream();
   }
   if (_ui.stopStreamBtn.handle()) {
-    soundIO->stopSoundStream();
+    _soundIO->stopSoundStream();
   }
   if (_ui.shotStreamBtn.handle()) {
-    soundIO->startSoundStream(true);
+    _soundIO->startSoundStream(true);
   }
 }
 
