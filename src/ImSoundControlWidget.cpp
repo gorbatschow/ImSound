@@ -6,7 +6,7 @@ namespace ImSound {
 
 void ControlWidget::loadWidgetState() {
   _ui.audioApiCombo.loadStateFromFile();
-  _soundIO->startSoundEngine(_ui.audioApiCombo());
+  _soundIO.startSoundEngine(_ui.audioApiCombo());
   _ui.inputDeviceCombo->loadStateFromFile();
   _ui.outputDeviceCombo->loadStateFromFile();
 
@@ -22,7 +22,7 @@ void ControlWidget::loadWidgetState() {
 
 void ControlWidget::loadState(const mINI::INIStructure &ini) {
   _ui.audioApiCombo.loadState(ini);
-  _soundIO->startSoundEngine(_ui.audioApiCombo());
+  _soundIO.startSoundEngine(_ui.audioApiCombo());
   _ui.inputDeviceCombo->loadState(ini);
   _ui.outputDeviceCombo->loadState(ini);
 
@@ -80,22 +80,22 @@ void ControlWidget::paint() {
 
   // Handle
   if (_ui.audioApiCombo.handle()) {
-    _soundIO->startSoundEngine(_ui.audioApiCombo());
+    _soundIO.startSoundEngine(_ui.audioApiCombo());
   }
   if (_ui.restartEngineBtn.handle()) {
-    _soundIO->startSoundEngine(_ui.audioApiCombo());
+    _soundIO.startSoundEngine(_ui.audioApiCombo());
   }
   if (_ui.setupStreamBtn.handle()) {
-    _soundIO->setupSoundStream();
+    _soundIO.setupSoundStream();
   }
   if (_ui.startStreamBtn.handle()) {
-    _soundIO->startSoundStream();
+    _soundIO.startSoundStream();
   }
   if (_ui.stopStreamBtn.handle()) {
-    _soundIO->stopSoundStream();
+    _soundIO.stopSoundStream();
   }
   if (_ui.shotStreamBtn.handle()) {
-    _soundIO->startSoundStream(true);
+    _soundIO.startSoundStream(true);
   }
 }
 
