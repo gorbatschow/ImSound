@@ -54,6 +54,12 @@ public:
       exclusiveCheck.setSameLine(true);
       numBuffersSpin.setWidth(100.0f);
       numBuffersSpin.setValueLimits({1, 9});
+
+      audioApiCombo.setWidth(300.f);
+      sampleRateCombo.setWidth(200.f);
+      inputDeviceCombo->setWidth(300.f);
+      bufferFramesInput.setWidth(200.f);
+      inputChannelsSpin.setWidth(200.f);
     }
 
     ImWrap::Button restartEngineBtn{"Restart"};
