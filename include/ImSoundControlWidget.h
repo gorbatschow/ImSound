@@ -11,7 +11,11 @@ namespace ImSound {
 class ControlWidget : public RtSound::Client {
 public:
   // Constructor
-  ControlWidget(RtSound::IO &io) : _soundIO{io} {}
+  ControlWidget(std::shared_ptr<RtSound::IO> io) : _soundIO{io} {
+    _soundIO->addClient(_ui.inputDeviceCombo);
+    _soundIO->addClient(_ui.outputDeviceCombo);
+    _soundIO->addClient(_ui.streamStatusLine);
+  }
 
   // Destructor
   virtual ~ControlWidget() override = default;
@@ -19,13 +23,6 @@ public:
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
     return typeid(this);
-  }
-
-  // Apply Provider
-  virtual void applyStreamProvider(RtSound::Provider &provider) override {
-    provider.addClient(_ui.inputDeviceCombo);
-    provider.addClient(_ui.outputDeviceCombo);
-    provider.addClient(_ui.streamStatusLine);
   }
 
   // Load State
@@ -94,7 +91,7 @@ private:
   virtual void configureStream(RtSound::StreamSetup &) override;
 
 private:
-  RtSound::IO &_soundIO;
+  std::shared_ptr<RtSound::IO> _soundIO;
   Ui _ui;
 };
 } // namespace ImSound

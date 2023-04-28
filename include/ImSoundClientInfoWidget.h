@@ -10,7 +10,7 @@ class ClientInfoWidget : public RtSound::Client
 {
 public:
   // Constructor
-  ClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
+  ClientInfoWidget();
 
   // Destructor
   ~ClientInfoWidget() = default;

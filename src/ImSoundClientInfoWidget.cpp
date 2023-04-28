@@ -3,13 +3,14 @@
 #include <imgui.h>
 
 namespace ImSound {
+ClientInfoWidget::ClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
+
 void ClientInfoWidget::loadWidgetState() {
   ui.holdTimeCheck.loadStateFromFile();
 }
 
 void ClientInfoWidget::paint() {
-  const auto &provider{streamProvider()};
-  std::lock_guard(provider.providerMutex);
+  std::lock_guard lock{clientMutex};
 
   ui.holdTimeCheck.paint();
   ui.resetHold.paint();
@@ -51,15 +52,13 @@ void ClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
 }
 
 void ClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
-  const auto &provider{streamProvider()};
-  std::lock_guard(provider.providerMutex);
+  std::lock_guard lock(clientMutex);
 
   ui.tBufLabel.setValue(data.framesT());
   ui.tPrcLabel.setValue(updateClientsTable());
 }
 
 long ClientInfoWidget::updateClientsTable() {
-  const auto &provider{streamProvider()};
   long totalTime{0};
   for (auto &ct : _clientTime) {
     const auto client{ct.client.lock()};
