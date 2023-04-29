@@ -33,8 +33,9 @@ private:
   };
   std::vector<ClientTime> _clientTime;
 
-  void applyStreamConfig(const RtSound::StreamSetup &setup) override;
-  void streamDataReady(const RtSound::StreamData &data) override;
+  virtual void updateSoundClients(
+      const std::vector<std::shared_ptr<Client> > &clients) override;
+  virtual void streamDataReady(const RtSound::StreamData &data) override;
   long updateClientsTable();
   void paintRow(const ClientTime &client);
 

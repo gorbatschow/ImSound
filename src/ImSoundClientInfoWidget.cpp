@@ -1,9 +1,10 @@
 #include "ImSoundClientInfoWidget.h"
-#include <RtSoundProvider.h>
 #include <imgui.h>
 
 namespace ImSound {
-ClientInfoWidget::ClientInfoWidget() { setClientName("SoundClientInfoWidget"); }
+ClientInfoWidget::ClientInfoWidget() {
+  setClientName("ImSound::ClientInfoWidget");
+}
 
 void ClientInfoWidget::loadWidgetState() {
   ui.holdTimeCheck.loadStateFromFile();
@@ -28,9 +29,9 @@ void ClientInfoWidget::paint() {
 
   if (ImGui::BeginTable("Client Info Table", tableCols)) {
     ImGui::TableSetupColumn("Name");
-    ImGui::TableSetupColumn("Type");
+    ImGui::TableSetupColumn("Type ID");
     ImGui::TableSetupColumn("Priority", colFlags, 50);
-    ImGui::TableSetupColumn("Time us", colFlags, 50);
+    ImGui::TableSetupColumn("Time [us]", colFlags, 80);
     ImGui::TableHeadersRow();
     for (const auto &ct : _clientTime) {
       paintRow(ct);
@@ -39,15 +40,14 @@ void ClientInfoWidget::paint() {
   }
 }
 
-void ClientInfoWidget::applyStreamConfig(const RtSound::StreamSetup &setup) {
+void ClientInfoWidget::updateSoundClients(
+    const std::vector<std::shared_ptr<Client> > &clients) {
   ui.tBufLabel.setValue(0);
   ui.tPrcLabel.setValue(0);
-
-  const auto &provider{streamProvider()};
   _clientTime.clear();
-  _clientTime.reserve(provider.clients().size());
-  for (const auto &clientPtr : provider.clients()) {
-    _clientTime.push_back({clientPtr, 0});
+  _clientTime.reserve(clients.size());
+  for (const auto &client : clients) {
+    _clientTime.push_back({client, 0});
   }
 }
 
@@ -92,7 +92,7 @@ void ClientInfoWidget::paintRow(const ClientTime &ct) {
   ImGui::TextUnformatted(client->clientTypeId().name());
   // priority
   ImGui::TableNextColumn();
-  ImGui::Text("%d", client->priority());
+  ImGui::Text("%d", client->clientPriority());
   // time
   ImGui::TableNextColumn();
   ImGui::Text("%ld", ct.time);

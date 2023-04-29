@@ -73,7 +73,7 @@ private:
 // -----------------------------------------------------------------------------
 class StreamStatusLine : public ImWrap::BasicElement, public RtSound::Client {
 public:
-  StreamStatusLine() {}
+  StreamStatusLine() { setClientName("ImSound::StreamStatusLine"); }
 
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
@@ -103,6 +103,7 @@ public:
   // Constructor
   SoundDeviceCombo(DeviceType t = AllDevices, bool displayAll = true)
       : _deviceType(t), _displayAll(displayAll) {
+    setClientName("ImSound::SoundDeviceCombo");
     if (t == AllDevices) {
       setLabel("Audio Device");
     } else if (t == InputDevices) {
