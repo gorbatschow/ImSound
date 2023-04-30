@@ -5,7 +5,7 @@ namespace ImSound {
 class SetupDisplayWidget : public RtSound::Client
 {
 public:
-  SetupDisplayWidget() = default;
+  SetupDisplayWidget();
   ~SetupDisplayWidget() = default;
 
   virtual const std::type_info &clientTypeId() const override {
@@ -14,12 +14,10 @@ public:
 
   void paint();
 
-protected:
-  virtual void applyStreamConfig(const RtSound::StreamSetup &setup) override;
-
 private:
-  RtSound::StreamSetup _setup;
-
+  virtual void applyStreamConfig(const RtSound::StreamSetup &setup) override;
   void appendRow(const std::string &param = {}, const std::string &value = {});
+
+  std::unique_ptr<RtSound::StreamSetup> _setup;
 };
 } // namespace ImSound
