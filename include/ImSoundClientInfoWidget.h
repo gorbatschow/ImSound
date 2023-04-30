@@ -1,8 +1,6 @@
 #pragma once
 #include <RtSoundClient.h>
-#include <atomic>
 #include <cstdint>
-#include <imw.h>
 #include <typeindex>
 
 namespace ImSound {
@@ -13,7 +11,7 @@ public:
   ClientInfoWidget();
 
   // Destructor
-  ~ClientInfoWidget() = default;
+  ~ClientInfoWidget();
 
   // Client Type Id
   virtual const std::type_info &clientTypeId() const override {
@@ -27,31 +25,16 @@ public:
   void paint();
 
 private:
-  struct ClientTime {
-    std::weak_ptr<RtSound::Client> client;
-    long time{};
-  };
-  std::vector<ClientTime> _clientTime;
+  struct ClientTime;
+  std::vector<std::unique_ptr<ClientTime> > _clientTime;
+
+  struct Ui;
+  std::unique_ptr<Ui> _ui;
 
   virtual void updateSoundClients(
       const std::vector<std::shared_ptr<Client> > &clients) override;
   virtual void streamDataReady(const RtSound::StreamData &data) override;
   long updateClientsTable();
   void paintRow(const ClientTime &client);
-
-  struct Ui {
-    Imw::CheckBox holdTimeCheck{"Hold time"};
-    Imw::Button resetHold{"Reset"};
-    Imw::ValueLabel<int> tBufLabel{"Tbuf=%ld"};
-    Imw::ValueLabel<int> tPrcLabel{"Tprc=%ld"};
-
-    Ui() {
-      resetHold.setSameLine(true);
-      // resetHold.setWidth(0.0f);
-      tBufLabel.setSameLine(true);
-      tPrcLabel.setSameLine(true);
-    }
-  };
-  Ui ui;
 };
 } // namespace ImSound
