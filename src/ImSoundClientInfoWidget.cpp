@@ -5,17 +5,14 @@
 
 namespace ImSound {
 
-struct ClientInfoWidget::ClientTime
-{
+struct ClientInfoWidget::ClientTime {
   std::weak_ptr<RtSound::Client> client;
   long time{};
 
-  ClientTime(const std::shared_ptr<RtSound::Client> &ptr)
-      : client{ptr} {}
+  ClientTime(const std::shared_ptr<RtSound::Client> &ptr) : client{ptr} {}
 };
 
-struct ClientInfoWidget::Ui
-{
+struct ClientInfoWidget::Ui {
   ImWrap::CheckBox holdTimeCheck{"Hold time"};
   ImWrap::Button resetHold{"Reset"};
   ImWrap::ValueLabel<double> tRunLabel{"Trun=%.1f"};
@@ -31,8 +28,7 @@ struct ClientInfoWidget::Ui
   }
 };
 
-ClientInfoWidget::ClientInfoWidget()
-    : _ui{std::make_unique<Ui>()} {
+ClientInfoWidget::ClientInfoWidget() : _ui{std::make_unique<Ui>()} {
   setClientName("ImSound::ClientInfoWidget");
 }
 
@@ -52,8 +48,7 @@ void ClientInfoWidget::paint() {
   _ui->tPrcLabel.paint();
 
   if (_ui->resetHold.handle()) {
-    std::for_each(std::begin(_clientTime),
-                  std::end(_clientTime),
+    std::for_each(std::begin(_clientTime), std::end(_clientTime),
                   [](const auto &info) { info->time = 0; });
     _ui->tPrcLabel.setValue(0);
   }
@@ -75,7 +70,7 @@ void ClientInfoWidget::paint() {
 }
 
 void ClientInfoWidget::updateSoundClients(
-    const std::vector<std::shared_ptr<Client> > &clients) {
+    const std::vector<std::shared_ptr<Client>> &clients) {
   _ui->tRunLabel.setValue({});
   _ui->tBufLabel.setValue({});
   _ui->tPrcLabel.setValue({});
@@ -89,7 +84,7 @@ void ClientInfoWidget::updateSoundClients(
 void ClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
   std::lock_guard lock(clientMutex);
   _ui->tRunLabel.setValue(data.streamTime());
-  _ui->tBufLabel.setValue(data.framesT());
+  _ui->tBufLabel.setValue(data.framesT_us());
   _ui->tPrcLabel.setValue(updateClientsTable());
 }
 
