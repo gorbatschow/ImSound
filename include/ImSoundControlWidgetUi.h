@@ -15,6 +15,7 @@ struct ControlWidgetUi
   ImWrap::CheckBox minLatencyCheck{"Min. Latency"};
   ImWrap::CheckBox exclusiveCheck{"Exclusive"};
   ImWrap::SpinBox<int> numBuffersSpin{"Num. Buffers"};
+  ImWrap::CheckBox virtStreamFlag{"Virtual Stream"};
 
   AudioApiCombo audioApiCombo;
   SampleRateCombo sampleRateCombo;

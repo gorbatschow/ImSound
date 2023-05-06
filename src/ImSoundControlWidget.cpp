@@ -30,6 +30,7 @@ void ControlWidget::loadState(const mINI::INIStructure &ini) {
   _ui->numBuffersSpin.loadState(ini);
   _ui->sampleRateCombo.loadState(ini);
   _ui->bufferFramesInput.loadState(ini);
+  _ui->virtStreamFlag.loadState(ini);
 }
 
 void ControlWidget::saveState(mINI::INIStructure &ini) const {
@@ -45,6 +46,7 @@ void ControlWidget::saveState(mINI::INIStructure &ini) const {
   _ui->numBuffersSpin.saveState(ini);
   _ui->sampleRateCombo.saveState(ini);
   _ui->bufferFramesInput.saveState(ini);
+  _ui->virtStreamFlag.saveState(ini);
 }
 
 void ControlWidget::paint() {
@@ -65,6 +67,7 @@ void ControlWidget::paint() {
   _ui->realtimeCheck.paint();
   _ui->minLatencyCheck.paint();
   _ui->exclusiveCheck.paint();
+  _ui->virtStreamFlag.paint();
 
   ImGui::Separator();
 
@@ -130,6 +133,8 @@ void ControlWidget::configureStream(RtSound::StreamSetup &setup) {
   if (_ui->exclusiveCheck()) {
     setup.addStreamFlags(RTAUDIO_HOG_DEVICE);
   }
+
+  setup.setStreamVirtual(_ui->virtStreamFlag());
 }
 
 // ----------------------------------------------------------------------------
