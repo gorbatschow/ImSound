@@ -1,7 +1,7 @@
 #include "ImSoundClientInfoWidget.h"
-#include <atomic>
 #include <imgui.h>
 #include <imwrap.h>
+#include <mutex>
 
 namespace ImSound {
 
@@ -39,7 +39,7 @@ void ClientInfoWidget::loadWidgetState() {
 }
 
 void ClientInfoWidget::paint() {
-  std::lock_guard lock{clientMutex};
+  std::scoped_lock lock{clientMutex};
 
   _ui->holdTimeCheck.paint();
   _ui->resetHold.paint();
@@ -82,7 +82,7 @@ void ClientInfoWidget::updateSoundClients(
 }
 
 void ClientInfoWidget::streamDataReady(const RtSound::StreamData &data) {
-  std::lock_guard lock(clientMutex);
+  std::scoped_lock lock(clientMutex);
   _ui->tRunLabel.setValue(data.streamTime());
   _ui->tBufLabel.setValue(data.framesT_us());
   _ui->tPrcLabel.setValue(updateClientsTable());

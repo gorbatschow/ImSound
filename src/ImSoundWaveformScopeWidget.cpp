@@ -45,25 +45,25 @@ void WaveformScopeWidget::paint() {
   // Handle
   if (ui.enabledCheck.handle()) {
     _enabled.exchange(ui.enabledCheck());
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.sourceCombo.handle()) {
     _isInput.exchange(ui.sourceCombo());
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.channelSpin.handle()) {
     _channel.exchange(ui.channelSpin());
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
     std::fill(_yData.begin(), _yData.end(), 0.0);
   }
 
   if (ui.memorySpin.handle()) {
     _memory.exchange(ui.memorySpin());
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
     adjustDataSize();
   }
 }
@@ -80,7 +80,7 @@ void WaveformScopeWidget::plot() {
   const int npts{std::clamp(int(xmax - xmin + 1), 0, dataSize)};
 
   {
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
 
     const auto intervalCounter{_intervalCounter.load()};
     if (intervalCounter == 0) {
@@ -122,7 +122,7 @@ void WaveformScopeWidget::streamDataReady(const RtSound::StreamData &data) {
   }
 
   {
-    std::lock_guard lock(clientMutex);
+    std::scoped_lock lock(clientMutex);
 
     const auto buffer{isInput ? data.inputBuffer(channel)
                               : data.outputBuffer(channel)};
