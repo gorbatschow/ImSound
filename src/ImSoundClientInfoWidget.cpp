@@ -61,12 +61,13 @@ void ClientInfoWidget::paint() {
     _ui->tPrcLabel.setValue(0);
   }
 
-  static const int tableCols{4};
+  static const int tableCols{5};
   static const ImGuiTableColumnFlags colFlags{ImGuiTableColumnFlags_WidthFixed};
 
   if (ImGui::BeginTable("Client Info Table", tableCols)) {
     ImGui::TableSetupColumn("Name");
     ImGui::TableSetupColumn("Type ID");
+    ImGui::TableSetupColumn("Use Count", colFlags, 50);
     ImGui::TableSetupColumn("Priority", colFlags, 50);
     ImGui::TableSetupColumn("Time [us]", colFlags, 80);
     ImGui::TableHeadersRow();
@@ -116,21 +117,23 @@ long ClientInfoWidget::updateClientsTable() {
 void ClientInfoWidget::paintRow(const ClientTime &ct) {
   const auto client{ct.client.lock()};
   if (!client) {
-    assert(false);
     return;
   }
 
   ImGui::TableNextRow();
-  // name
+  // Name
   ImGui::TableNextColumn();
   ImGui::TextUnformatted(client->clientName().c_str());
-  // type
+  // Type Id
   ImGui::TableNextColumn();
   ImGui::TextUnformatted(client->clientTypeId().name());
-  // priority
+  // Use Count
+  ImGui::TableNextColumn();
+  ImGui::Text("%ld", client.use_count());
+  // Priority
   ImGui::TableNextColumn();
   ImGui::Text("%d", client->clientPriority());
-  // time
+  // Time
   ImGui::TableNextColumn();
   ImGui::Text("%ld", ct.time);
 }
