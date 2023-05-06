@@ -34,6 +34,14 @@ ClientInfoWidget::ClientInfoWidget() : _ui{std::make_unique<Ui>()} {
 
 ClientInfoWidget::~ClientInfoWidget() = default;
 
+void ClientInfoWidget::loadState(const mINI::INIStructure &ini) {
+  _ui->holdTimeCheck.loadState(ini);
+}
+
+void ClientInfoWidget::saveState(mINI::INIStructure &ini) const {
+  _ui->holdTimeCheck.saveState(ini);
+}
+
 void ClientInfoWidget::loadWidgetState() {
   _ui->holdTimeCheck.loadStateFromFile();
 }

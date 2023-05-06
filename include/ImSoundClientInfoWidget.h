@@ -1,4 +1,5 @@
 #pragma once
+#include "ini.h"
 #include <RtSoundClient.h>
 #include <cstdint>
 #include <typeindex>
@@ -19,6 +20,8 @@ public:
   }
 
   // Load State
+  void loadState(const mINI::INIStructure &ini);
+  void saveState(mINI::INIStructure &ini) const;
   void loadWidgetState();
 
   // Paint
